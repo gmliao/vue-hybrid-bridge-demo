@@ -1,0 +1,23 @@
+{
+  "name": "vue-hybrid-bridge-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Vue3 Host + Vue2 Legacy iframe integration with URL token authentication",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n vue3,vue2 -c blue,green \"npm run dev:vue3\" \"npm run dev:vue2\"",
+    "dev:vue3": "npm run dev -w packages/vue3-host",
+    "dev:vue2": "npm run dev -w packages/vue2-legacy",
+    "build": "npm run build -w packages/shared-bridge && npm run build -w packages/vue3-host && npm run build -w packages/vue2-legacy",
+    "build:bridge": "npm run build -w packages/shared-bridge"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
+
