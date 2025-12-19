@@ -10,7 +10,7 @@ This project is a technical demonstration that integrates Vue2 Legacy into Vue3 
 
 ## Screenshot Preview
 
-![Demo Screenshot](./docs/images/demo-screenshot.png)
+![Demo Screenshot](./docs/images/demo-screenshot.png?v=2)
 
 **Key Features:**
 - Top white navigation bar is controlled by **Vue3 Host** (shows "Vue3 Host In Control" badge)

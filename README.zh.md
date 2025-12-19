@@ -12,7 +12,7 @@
 
 ## 截圖預覽
 
-![Demo Screenshot](./docs/images/demo-screenshot.png)
+![Demo Screenshot](./docs/images/demo-screenshot.png?v=2)
 
 **功能展示：**
 - 上方白色導航列為 **Vue3 Host** 控制（顯示「Vue3 Host 控制中」標籤）
