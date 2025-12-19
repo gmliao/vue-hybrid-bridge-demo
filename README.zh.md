@@ -4,6 +4,10 @@
 以 Vue3 Host + iframe 方式整合 Vue2 Legacy，並透過 Message Bridge
 同步狀態與導航，保留 URL token 登入機制。
 
+## 🌐 線上展示
+
+**[查看線上展示 →](https://gmliao.github.io/vue-hybrid-bridge-demo/)**
+
 ---
 
 ## 截圖預覽
@@ -18,8 +22,6 @@
 - Vue2 在 iframe 模式下自動隱藏原生導航列
 - 登入狀態透過 URL token 傳遞，由 Vue2 驗證後回報給 Vue3
 - **中英文切換**：預設英文，點擊右上角語言按鈕（顯示「中文」）可切換至中文，Vue3 與 Vue2 語言同步
-
----
 
 ## 快速啟動（Quick Start）
 

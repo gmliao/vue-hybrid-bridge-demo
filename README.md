@@ -2,13 +2,17 @@
 
 This project is a technical demonstration that integrates Vue2 Legacy into Vue3 Host using iframe + Message Bridge, while **maintaining the existing login flow unchanged**. The URL token authentication mechanism is preserved.
 
+## 🌐 Live Demo
+
+**[View Live Demo →](https://gmliao.github.io/vue-hybrid-bridge-demo/)**
+
 ---
 
 ## Screenshot Preview
 
 ![Demo Screenshot](./docs/images/demo-screenshot.png)
 
-**Features:**
+**Key Features:**
 - Top white navigation bar is controlled by **Vue3 Host** (shows "Vue3 Host In Control" badge)
 - Navigation buttons (Home, Dashboard, Settings) control Vue2 routes from Vue3
 - Top right shows language toggle button (中文/EN) and Legacy connection status
@@ -16,14 +20,6 @@ This project is a technical demonstration that integrates Vue2 Legacy into Vue3 
 - Vue2 automatically hides native navigation bar in iframe mode
 - Login status is passed via URL token, verified by Vue2 and reported to Vue3
 - **Language Toggle**: Default English, click top right language button (shows "中文") to switch to Chinese, Vue3 and Vue2 languages sync
-
----
-
-## Live Demo
-
-🌐 **GitHub Pages:** [View Live Demo](https://gmliao.github.io/vue-hybrid-bridge-demo/)
-
----
 
 ## Quick Start
 
