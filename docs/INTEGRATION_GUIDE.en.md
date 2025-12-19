@@ -1,9 +1,5 @@
 # Integration Guide
 
-**Language:** [English](./INTEGRATION_GUIDE.en.md) | [中文版](./INTEGRATION_GUIDE.zh.md)
-
----
-
 This document explains how to apply this Demo's pattern to real projects.
 
 ---
@@ -318,3 +314,4 @@ Complete examples can be found in:
 ---
 
 **Language:** [English](./INTEGRATION_GUIDE.en.md) | [中文版](./INTEGRATION_GUIDE.zh.md)
+

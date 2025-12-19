@@ -223,7 +223,7 @@ Vue2 完成登入驗證後發送。
 // Vue2 發送
 bridge.authReady({
   id: 1,
-  name: '測試使用者',
+    name: 'Test User',
   email: 'test@example.com'
 })
 

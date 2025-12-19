@@ -1,9 +1,5 @@
 # Login Flow Documentation
 
-**Language:** [English](./LOGIN_FLOW.en.md) | [中文版](./LOGIN_FLOW.zh.md)
-
----
-
 ## Core Principle
 
 > **Vue2 login flow must maintain URL query token, cannot be changed.**
@@ -216,3 +212,4 @@ Before modifying any login-related code, confirm:
 ---
 
 **Language:** [English](./LOGIN_FLOW.en.md) | [中文版](./LOGIN_FLOW.zh.md)
+

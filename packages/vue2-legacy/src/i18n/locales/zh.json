@@ -1,0 +1,56 @@
+{
+  "nav": {
+    "brand": "Vue2 Legacy",
+    "home": "首頁",
+    "dashboard": "儀表板",
+    "settings": "設定",
+    "loggedIn": "已登入",
+    "notLoggedIn": "未登入"
+  },
+  "home": {
+    "title": "首頁",
+    "subtitle": "歡迎來到 Vue2 Legacy App（TypeScript + Class Style）",
+    "loginStatus": "登入狀態",
+    "loggedIn": "已登入",
+    "notLoggedIn": "未登入",
+    "user": "使用者",
+    "email": "Email",
+    "noToken": "URL 中未包含 token",
+    "techDesc": "技術說明",
+    "tech1": "透過 URL Query Token 進行登入驗證",
+    "tech2": "使用 postMessage 與 Vue3 Host 通訊",
+    "tech3": "Vuex + TypeScript 管理應用程式狀態",
+    "tech4": "vue-class-component 類別風格組件",
+    "tech5": "支援來自 Host 的路由導航"
+  },
+  "dashboard": {
+    "title": "儀表板",
+    "subtitle": "這是 Vue2 Legacy 的儀表板頁面",
+    "users": "使用者",
+    "tasks": "任務",
+    "completion": "完成率",
+    "responseTime": "回應時間",
+    "recentActivity": "最近活動"
+  },
+  "settings": {
+    "title": "設定",
+    "subtitle": "管理您的應用程式設定",
+    "general": "一般設定",
+    "darkMode": "深色模式",
+    "darkModeDesc": "切換應用程式外觀主題",
+    "notifications": "通知",
+    "notificationsDesc": "接收系統推播通知",
+    "accountInfo": "帳戶資訊",
+    "username": "使用者名稱",
+    "email": "電子郵件",
+    "token": "Token",
+    "noAuth": "請先登入以查看帳戶資訊",
+    "bridgeTest": "Bridge 測試",
+    "bridgeTestDesc": "測試與 Vue3 Host 的通訊",
+    "sendTestEvent": "發送測試事件",
+    "syncTestState": "同步測試狀態",
+    "testEventSent": "已發送測試事件到 Vue3 Host！",
+    "testStateSynced": "已同步設定狀態到 Vue3 Host！"
+  }
+}
+

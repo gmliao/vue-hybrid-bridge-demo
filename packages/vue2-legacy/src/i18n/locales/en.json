@@ -1,0 +1,56 @@
+{
+  "nav": {
+    "brand": "Vue2 Legacy",
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "loggedIn": "Logged In",
+    "notLoggedIn": "Not Logged In"
+  },
+  "home": {
+    "title": "Home",
+    "subtitle": "Welcome to Vue2 Legacy App (TypeScript + Class Style)",
+    "loginStatus": "Login Status",
+    "loggedIn": "Logged In",
+    "notLoggedIn": "Not Logged In",
+    "user": "User",
+    "email": "Email",
+    "noToken": "No token in URL",
+    "techDesc": "Technical Description",
+    "tech1": "Login authentication via URL Query Token",
+    "tech2": "Communicate with Vue3 Host using postMessage",
+    "tech3": "Vuex + TypeScript manage application state",
+    "tech4": "vue-class-component class style components",
+    "tech5": "Support route navigation from Host"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "This is the Vue2 Legacy dashboard page",
+    "users": "Users",
+    "tasks": "Tasks",
+    "completion": "Completion Rate",
+    "responseTime": "Response Time",
+    "recentActivity": "Recent Activity"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your application settings",
+    "general": "General Settings",
+    "darkMode": "Dark Mode",
+    "darkModeDesc": "Toggle application theme",
+    "notifications": "Notifications",
+    "notificationsDesc": "Receive system push notifications",
+    "accountInfo": "Account Information",
+    "username": "Username",
+    "email": "Email",
+    "token": "Token",
+    "noAuth": "Please log in to view account information",
+    "bridgeTest": "Bridge Test",
+    "bridgeTestDesc": "Test communication with Vue3 Host",
+    "sendTestEvent": "Send Test Event",
+    "syncTestState": "Sync Test State",
+    "testEventSent": "Test event sent to Vue3 Host!",
+    "testStateSynced": "Test state synced to Vue3 Host!"
+  }
+}
+

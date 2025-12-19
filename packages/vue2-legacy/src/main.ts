@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import i18n from './i18n'
 import { GuestBridge } from '@vue-hybrid-bridge/shared-bridge'
 
 Vue.config.productionTip = false
@@ -16,6 +17,13 @@ Vue.prototype.$bridge = bridge
 function parseQueryToken(): string | null {
   const urlParams = new URLSearchParams(window.location.search)
   return urlParams.get('token')
+}
+
+// 解析 URL query lang
+function parseQueryLang(): string {
+  const urlParams = new URLSearchParams(window.location.search)
+  const lang = urlParams.get('lang')
+  return lang === 'zh' ? 'zh' : 'en' // 預設英文
 }
 
 // 模擬登入（實際應用中應呼叫 API）
@@ -33,7 +41,7 @@ async function loginWithToken(token: string): Promise<{
   // 模擬取得使用者資料
   const user = {
     id: 1,
-    name: '測試使用者',
+    name: 'Test User',
     email: 'test@example.com',
     token: token
   }
@@ -59,6 +67,10 @@ async function initApp(): Promise<void> {
   // 監聽狀態同步
   bridge.on('STATE_SYNC', (message) => {
     console.log('[Vue2] State sync:', message.key, message.value)
+    if (message.key === 'locale') {
+      i18n.locale = message.value as string
+      localStorage.setItem('locale', message.value as string)
+    }
   })
 
   // 監聽事件
@@ -92,10 +104,16 @@ async function initApp(): Promise<void> {
   // 通知 Vue3 Host 應用程式已準備就緒
   bridge.ready()
   
+  // 設定語言
+  const lang = parseQueryLang()
+  i18n.locale = lang
+  localStorage.setItem('locale', lang)
+
   // 建立 Vue 實例
   new Vue({
     router,
     store,
+    i18n,
     render: h => h(App)
   }).$mount('#app')
 

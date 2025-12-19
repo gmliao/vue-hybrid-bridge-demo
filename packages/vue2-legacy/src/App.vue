@@ -4,20 +4,20 @@
     <nav v-if="!isInIframe" class="legacy-nav">
       <div class="nav-brand">
         <span class="brand-icon">📦</span>
-        <span class="brand-text">Vue2 Legacy</span>
+        <span class="brand-text">{{ $t('nav.brand') }}</span>
       </div>
       <div class="nav-links">
-        <router-link to="/">首頁</router-link>
-        <router-link to="/dashboard">儀表板</router-link>
-        <router-link to="/settings">設定</router-link>
+        <router-link to="/">{{ $t('nav.home') }}</router-link>
+        <router-link to="/dashboard">{{ $t('nav.dashboard') }}</router-link>
+        <router-link to="/settings">{{ $t('nav.settings') }}</router-link>
       </div>
       <div class="auth-status">
         <template v-if="isAuthenticated">
-          <span class="status-badge success">已登入</span>
+          <span class="status-badge success">{{ $t('nav.loggedIn') }}</span>
           <span class="user-name">{{ userName }}</span>
         </template>
         <template v-else>
-          <span class="status-badge warning">未登入</span>
+          <span class="status-badge warning">{{ $t('nav.notLoggedIn') }}</span>
         </template>
       </div>
     </nav>

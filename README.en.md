@@ -19,12 +19,6 @@ This project is a technical demonstration that integrates Vue2 Legacy into Vue3 
 
 ---
 
-## Live Demo
-
-🌐 **GitHub Pages:** [View Live Demo](https://gmliao.github.io/vue-hybrid-bridge-demo/)
-
----
-
 ## Quick Start
 
 ### Requirements
@@ -59,19 +53,19 @@ npm run dev
 ```
 vue-hybrid-bridge-demo/
 ├── package.json                    # npm workspace root config
-├── README.md                       # This file (entry point, default English)
+├── README.md                       # This file (entry point)
 ├── README.en.md                    # English version
 ├── README.zh.md                    # Chinese version
 ├── AGENTS.md                       # AI collaboration constraints
 │
 ├── docs/
-│   ├── ARCHITECTURE.md             # Architecture design doc (default English)
+│   ├── ARCHITECTURE.md             # Architecture design doc
 │   ├── ARCHITECTURE.en.md          # English version
 │   ├── ARCHITECTURE.zh.md          # Chinese version
-│   ├── LOGIN_FLOW.md               # Login flow doc (default English)
+│   ├── LOGIN_FLOW.md               # Login flow doc
 │   ├── LOGIN_FLOW.en.md            # English version
 │   ├── LOGIN_FLOW.zh.md            # Chinese version
-│   ├── INTEGRATION_GUIDE.md        # Integration guide (default English)
+│   ├── INTEGRATION_GUIDE.md        # Integration guide
 │   ├── INTEGRATION_GUIDE.en.md     # English version
 │   ├── INTEGRATION_GUIDE.zh.md     # Chinese version
 │   └── images/
@@ -174,6 +168,9 @@ vue-hybrid-bridge-demo/
 
 ---
 
+<div align="center" style="margin-top: 30px; padding: 15px; background-color: #f5f5f5; border-radius: 5px;">
+
 ---
 
 **Language:** [English](./README.en.md) | [中文版](./README.zh.md)
+

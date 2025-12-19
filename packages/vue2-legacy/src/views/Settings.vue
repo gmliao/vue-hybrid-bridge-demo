@@ -1,15 +1,15 @@
 <template>
   <div class="settings">
     <div class="settings-card">
-      <h1>⚙️ 設定</h1>
-      <p class="subtitle">管理您的應用程式設定</p>
+      <h1>⚙️ {{ $t('settings.title') }}</h1>
+      <p class="subtitle">{{ $t('settings.subtitle') }}</p>
 
       <div class="settings-section">
-        <h2>一般設定</h2>
+        <h2>{{ $t('settings.general') }}</h2>
         <div class="setting-item">
           <div class="setting-info">
-            <span class="setting-label">深色模式</span>
-            <span class="setting-desc">切換應用程式外觀主題</span>
+            <span class="setting-label">{{ $t('settings.darkMode') }}</span>
+            <span class="setting-desc">{{ $t('settings.darkModeDesc') }}</span>
           </div>
           <label class="toggle">
             <input type="checkbox" v-model="darkMode">
@@ -18,8 +18,8 @@
         </div>
         <div class="setting-item">
           <div class="setting-info">
-            <span class="setting-label">通知</span>
-            <span class="setting-desc">接收系統推播通知</span>
+            <span class="setting-label">{{ $t('settings.notifications') }}</span>
+            <span class="setting-desc">{{ $t('settings.notificationsDesc') }}</span>
           </div>
           <label class="toggle">
             <input type="checkbox" v-model="notifications">
@@ -29,35 +29,35 @@
       </div>
 
       <div class="settings-section">
-        <h2>帳戶資訊</h2>
+        <h2>{{ $t('settings.accountInfo') }}</h2>
         <div v-if="isAuthenticated" class="account-info">
           <div class="info-row">
-            <span class="info-label">使用者名稱</span>
+            <span class="info-label">{{ $t('settings.username') }}</span>
             <span class="info-value">{{ user?.name }}</span>
           </div>
           <div class="info-row">
-            <span class="info-label">電子郵件</span>
+            <span class="info-label">{{ $t('settings.email') }}</span>
             <span class="info-value">{{ user?.email }}</span>
           </div>
           <div class="info-row">
-            <span class="info-label">Token</span>
+            <span class="info-label">{{ $t('settings.token') }}</span>
             <span class="info-value token">{{ user?.token }}</span>
           </div>
         </div>
         <div v-else class="no-auth">
-          <p>⚠️ 請先登入以查看帳戶資訊</p>
+          <p>⚠️ {{ $t('settings.noAuth') }}</p>
         </div>
       </div>
 
       <div class="settings-section">
-        <h2>Bridge 測試</h2>
-        <p class="section-desc">測試與 Vue3 Host 的通訊</p>
+        <h2>{{ $t('settings.bridgeTest') }}</h2>
+        <p class="section-desc">{{ $t('settings.bridgeTestDesc') }}</p>
         <div class="button-group">
           <button class="btn btn-primary" @click="sendTestEvent">
-            📤 發送測試事件
+            📤 {{ $t('settings.sendTestEvent') }}
           </button>
           <button class="btn btn-secondary" @click="syncTestState">
-            🔄 同步測試狀態
+            🔄 {{ $t('settings.syncTestState') }}
           </button>
         </div>
       </div>
@@ -96,7 +96,7 @@ export default class Settings extends Vue {
       message: 'Hello from Vue2 (TypeScript)!',
       timestamp: new Date().toISOString()
     })
-    alert('已發送測試事件到 Vue3 Host！')
+    alert(this.$t('settings.testEventSent'))
   }
 
   syncTestState(): void {
@@ -104,7 +104,7 @@ export default class Settings extends Vue {
       darkMode: this.darkMode,
       notifications: this.notifications
     })
-    alert('已同步設定狀態到 Vue3 Host！')
+    alert(this.$t('settings.testStateSynced'))
   }
 }
 </script>

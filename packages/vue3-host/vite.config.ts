@@ -6,6 +6,7 @@ import { resolve } from 'path'
 const rootDir = resolve(__dirname, '../..')
 
 export default defineConfig({
+  base: process.env.GITHUB_ACTIONS ? '/vue-hybrid-bridge-demo/' : '/',
   plugins: [vue()],
   resolve: {
     alias: {

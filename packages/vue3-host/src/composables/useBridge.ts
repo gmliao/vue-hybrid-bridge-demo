@@ -38,6 +38,7 @@ export function useBridge() {
         authStore.setLegacyRoute(payload.path)
       }
     })
+
   }
 
   function disconnect() {

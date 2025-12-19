@@ -11,7 +11,8 @@
     "dev:vue3": "npm run dev -w packages/vue3-host",
     "dev:vue2": "npm run dev -w packages/vue2-legacy",
     "build": "npm run build -w packages/shared-bridge && npm run build -w packages/vue3-host && npm run build -w packages/vue2-legacy",
-    "build:bridge": "npm run build -w packages/shared-bridge"
+    "build:bridge": "npm run build -w packages/shared-bridge",
+    "build:gh-pages": "npm run build && node scripts/prepare-gh-pages.js"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

@@ -1,28 +1,28 @@
-# Integration Guide
+# 整合指南
 
-**Language:** [English](./INTEGRATION_GUIDE.en.md) | [中文版](./INTEGRATION_GUIDE.zh.md)
-
----
-
-This document explains how to apply this Demo's pattern to real projects.
+**語言：** [English](./INTEGRATION_GUIDE.en.md) | [中文版](./INTEGRATION_GUIDE.zh.md)
 
 ---
 
-## Integration Steps Overview
-
-1. Install shared-bridge package
-2. Integrate GuestBridge on Vue2 side
-3. Integrate HostBridge on Vue3 side
-4. Implement iframe mode detection
-5. Testing and validation
+本文件說明如何將此 Demo 的模式應用到實際專案中。
 
 ---
 
-## Step 1: Install shared-bridge
+## 整合步驟總覽
 
-### Method A: Copy to Project
+1. 安裝 shared-bridge 套件
+2. Vue2 端整合 GuestBridge
+3. Vue3 端整合 HostBridge
+4. 實作 iframe 模式偵測
+5. 測試與驗證
 
-Copy `packages/shared-bridge` to your project and reference in `package.json`:
+---
+
+## Step 1: 安裝 shared-bridge
+
+### 方式 A：複製到專案中
+
+將 `packages/shared-bridge` 複製到你的專案，並在 `package.json` 中引用：
 
 ```json
 {
@@ -32,26 +32,26 @@ Copy `packages/shared-bridge` to your project and reference in `package.json`:
 }
 ```
 
-### Method B: Publish as Private Package
+### 方式 B：發布為私有套件
 
-Build and publish to private npm registry.
+建構並發布到私有 npm registry。
 
 ---
 
-## Step 2: Vue2 Side Integration
+## Step 2: Vue2 端整合
 
-### 2.1 Install Related Packages
+### 2.1 安裝相關套件
 
-If using TypeScript + Class Style:
+如果使用 TypeScript + Class Style：
 
 ```bash
 npm install vue-class-component vue-property-decorator vuex-class
 npm install -D typescript @vue/cli-plugin-typescript
 ```
 
-### 2.2 Create Bridge Instance
+### 2.2 建立 Bridge 實例
 
-In `main.ts`:
+在 `main.ts` 中：
 
 ```typescript
 import { GuestBridge } from '@vue-hybrid-bridge/shared-bridge'
@@ -62,12 +62,12 @@ Vue.prototype.$bridge = bridge
 async function initApp() {
   bridge.connect()
   
-  // Listen for navigation
+  // 監聽導航
   bridge.on('NAVIGATE', (message) => {
     router.push(message.route)
   })
   
-  // Parse token and login
+  // 解析 token 並登入
   const token = parseQueryToken()
   if (token) {
     const user = await loginWithToken(token)
@@ -77,16 +77,16 @@ async function initApp() {
   
   bridge.ready()
   
-  // Route change notification
+  // 路由變化通知
   router.afterEach((to) => {
     bridge.emit('ROUTE_CHANGE', { path: to.path })
   })
 }
 ```
 
-### 2.3 Implement iframe Detection
+### 2.3 實作 iframe 偵測
 
-In `App.vue`:
+在 `App.vue` 中：
 
 ```typescript
 @Component
@@ -101,17 +101,17 @@ export default class App extends Vue {
 }
 ```
 
-Conditional rendering in template:
+模板中條件渲染：
 
 ```vue
 <nav v-if="!isInIframe" class="nav">
-  <!-- Original navigation bar -->
+  <!-- 原有導航列 -->
 </nav>
 ```
 
-### 2.4 TypeScript Type Definitions
+### 2.4 TypeScript 型別定義
 
-Create `shims-bridge.d.ts`:
+建立 `shims-bridge.d.ts`：
 
 ```typescript
 import { GuestBridge } from '@vue-hybrid-bridge/shared-bridge'
@@ -125,9 +125,9 @@ declare module 'vue/types/vue' {
 
 ---
 
-## Step 3: Vue3 Side Integration
+## Step 3: Vue3 端整合
 
-### 3.1 Create Composable
+### 3.1 建立 Composable
 
 ```typescript
 // composables/useBridge.ts
@@ -165,7 +165,7 @@ export function useBridge() {
 }
 ```
 
-### 3.2 Create Auth Store
+### 3.2 建立 Auth Store
 
 ```typescript
 // stores/auth.ts
@@ -183,7 +183,7 @@ export const useAuthStore = defineStore('auth', () => {
 })
 ```
 
-### 3.3 Create iframe Container
+### 3.3 建立 iframe 容器
 
 ```vue
 <template>
@@ -216,60 +216,60 @@ const legacyUrl = computed(() => {
 
 ## Step 4: Message Protocol
 
-### Available Message Types
+### 可用訊息類型
 
-| Type | Direction | Description |
-|------|-----------|-------------|
-| `READY` | Vue2 → Vue3 | Legacy startup complete |
-| `AUTH_READY` | Vue2 → Vue3 | Login complete, includes user data |
-| `NAVIGATE` | Vue3 → Vue2 | Route navigation command |
-| `STATE_SYNC` | Bidirectional | State synchronization |
-| `EVENT` | Bidirectional | Generic events |
+| 類型 | 方向 | 說明 |
+|------|------|------|
+| `READY` | Vue2 → Vue3 | Legacy 啟動完成 |
+| `AUTH_READY` | Vue2 → Vue3 | 登入完成，含 user 資料 |
+| `NAVIGATE` | Vue3 → Vue2 | 路由導航指令 |
+| `STATE_SYNC` | 雙向 | 狀態同步 |
+| `EVENT` | 雙向 | 通用事件 |
 
-### Extending Events
+### 擴展事件
 
-Use `EVENT` type to pass custom events:
+使用 `EVENT` 類型傳遞自訂事件：
 
 ```typescript
-// Vue2 send
+// Vue2 發送
 bridge.emit('ROUTE_CHANGE', { path: '/dashboard' })
 
-// Vue3 receive
+// Vue3 接收
 bridge.on('EVENT', (message) => {
   if (message.name === 'ROUTE_CHANGE') {
-    // Handle route change
+    // 處理路由變化
   }
 })
 ```
 
 ---
 
-## Step 5: Validation Checklist
+## Step 5: 驗證清單
 
-### Feature Validation
+### 功能驗證
 
-- [ ] Vue3 iframe URL correctly includes token
-- [ ] Vue2 can parse URL token and login
-- [ ] Vue3 receives AUTH_READY after Vue2 login
-- [ ] Vue3 navigation buttons can control Vue2 routes
-- [ ] Vue3 can receive notification when Vue2 route changes
-- [ ] Vue2 hides navigation bar in iframe
-- [ ] Vue2 shows navigation bar when accessed standalone
-- [ ] Vue2 shows unauthenticated state when no token
+- [ ] Vue3 iframe URL 正確帶入 token
+- [ ] Vue2 能解析 URL token 並登入
+- [ ] Vue2 登入後 Vue3 收到 AUTH_READY
+- [ ] Vue3 導航按鈕能控制 Vue2 路由
+- [ ] Vue2 路由變化 Vue3 能收到通知
+- [ ] Vue2 在 iframe 中隱藏導航列
+- [ ] Vue2 獨立存取時顯示導航列
+- [ ] 未帶 token 時 Vue2 顯示未登入狀態
 
-### Constraint Validation
+### 約束驗證
 
-- [ ] Vue2 login flow not modified
-- [ ] URL token mechanism preserved
-- [ ] Vue2 still single source of truth for login status
+- [ ] Vue2 登入流程未被修改
+- [ ] URL token 機制保留
+- [ ] Vue2 仍為登入狀態的單一真實來源
 
 ---
 
-## Common Issues
+## 常見問題
 
-### Q: vue-demi conflict?
+### Q: vue-demi 衝突怎麼辦？
 
-Specify vue-demi version in `vite.config.ts`:
+在 `vite.config.ts` 中指定 vue-demi 版本：
 
 ```typescript
 resolve: {
@@ -279,7 +279,7 @@ resolve: {
 }
 ```
 
-### Q: Port already in use?
+### Q: 端口被佔用？
 
 ```bash
 # Windows
@@ -291,30 +291,30 @@ lsof -i :5173
 kill -9 <PID>
 ```
 
-### Q: TypeScript compilation errors?
+### Q: TypeScript 編譯錯誤？
 
-Ensure `tsconfig.json` includes:
+確保 `tsconfig.json` 包含：
 
 ```json
 {
   "compilerOptions": {
     "experimentalDecorators": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true
+    "skipLibCheck": true
   }
 }
 ```
 
 ---
 
-## Code Examples
+## 程式碼範例
 
-Complete examples can be found in:
+完整範例請參考：
 
-- Vue2 entry: `packages/vue2-legacy/src/main.ts`
-- Vue3 container: `packages/vue3-host/src/components/LegacyFrame.vue`
-- Bridge API: `packages/shared-bridge/README.md`
+- Vue2 入口：`packages/vue2-legacy/src/main.ts`
+- Vue3 容器：`packages/vue3-host/src/components/LegacyFrame.vue`
+- Bridge API：`packages/shared-bridge/README.md`
 
 ---
 
-**Language:** [English](./INTEGRATION_GUIDE.en.md) | [中文版](./INTEGRATION_GUIDE.zh.md)
+**語言：** [English](./INTEGRATION_GUIDE.en.md) | [中文版](./INTEGRATION_GUIDE.zh.md)
+

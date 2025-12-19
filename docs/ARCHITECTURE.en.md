@@ -1,9 +1,5 @@
 # Architecture Design Document
 
-**Language:** [English](./ARCHITECTURE.en.md) | [中文版](./ARCHITECTURE.zh.md)
-
----
-
 ## System Architecture Overview
 
 ```mermaid
@@ -211,3 +207,4 @@ const bridge = new GuestBridge({
 ---
 
 **Language:** [English](./ARCHITECTURE.en.md) | [中文版](./ARCHITECTURE.zh.md)
+

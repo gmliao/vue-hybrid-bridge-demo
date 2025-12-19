@@ -1,51 +1,51 @@
 <template>
   <div class="home">
     <div class="hero-card">
-      <h1>🏠 首頁</h1>
-      <p class="subtitle">歡迎來到 Vue2 Legacy App（TypeScript + Class Style）</p>
+      <h1>🏠 {{ $t('home.title') }}</h1>
+      <p class="subtitle">{{ $t('home.subtitle') }}</p>
       
       <div class="info-section">
-        <h2>登入狀態</h2>
+        <h2>{{ $t('home.loginStatus') }}</h2>
         <div class="status-card" :class="{ authenticated: isAuthenticated }">
           <div class="status-icon">
             {{ isAuthenticated ? '✅' : '❌' }}
           </div>
           <div class="status-info">
             <template v-if="isAuthenticated">
-              <p class="status-title">已登入</p>
-              <p class="status-detail">使用者：{{ user?.name }}</p>
-              <p class="status-detail">Email：{{ user?.email }}</p>
+              <p class="status-title">{{ $t('home.loggedIn') }}</p>
+              <p class="status-detail">{{ $t('home.user') }}：{{ user?.name }}</p>
+              <p class="status-detail">{{ $t('home.email') }}：{{ user?.email }}</p>
             </template>
             <template v-else>
-              <p class="status-title">未登入</p>
-              <p class="status-detail">URL 中未包含 token</p>
+              <p class="status-title">{{ $t('home.notLoggedIn') }}</p>
+              <p class="status-detail">{{ $t('home.noToken') }}</p>
             </template>
           </div>
         </div>
       </div>
 
       <div class="info-section">
-        <h2>技術說明</h2>
+        <h2>{{ $t('home.techDesc') }}</h2>
         <ul class="feature-list">
           <li>
             <span class="feature-icon">🔗</span>
-            <span>透過 URL Query Token 進行登入驗證</span>
+            <span>{{ $t('home.tech1') }}</span>
           </li>
           <li>
             <span class="feature-icon">📨</span>
-            <span>使用 postMessage 與 Vue3 Host 通訊</span>
+            <span>{{ $t('home.tech2') }}</span>
           </li>
           <li>
             <span class="feature-icon">🗂️</span>
-            <span>Vuex + TypeScript 管理應用程式狀態</span>
+            <span>{{ $t('home.tech3') }}</span>
           </li>
           <li>
             <span class="feature-icon">🎨</span>
-            <span>vue-class-component 類別風格組件</span>
+            <span>{{ $t('home.tech4') }}</span>
           </li>
           <li>
             <span class="feature-icon">🧭</span>
-            <span>支援來自 Host 的路由導航</span>
+            <span>{{ $t('home.tech5') }}</span>
           </li>
         </ul>
       </div>

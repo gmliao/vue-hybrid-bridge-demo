@@ -1,0 +1,15 @@
+{
+  "nav": {
+    "brand": "Vue3 Host",
+    "control": "控制中",
+    "legacyConnected": "Legacy 已連接",
+    "legacyConnecting": "連接中...",
+    "home": "首頁",
+    "dashboard": "儀表板",
+    "settings": "設定"
+  },
+  "common": {
+    "loading": "正在載入 Legacy App..."
+  }
+}
+

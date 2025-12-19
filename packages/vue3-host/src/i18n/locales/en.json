@@ -1,0 +1,15 @@
+{
+  "nav": {
+    "brand": "Vue3 Host",
+    "control": "In Control",
+    "legacyConnected": "Legacy Connected",
+    "legacyConnecting": "Connecting...",
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "settings": "Settings"
+  },
+  "common": {
+    "loading": "Loading Legacy App..."
+  }
+}
+

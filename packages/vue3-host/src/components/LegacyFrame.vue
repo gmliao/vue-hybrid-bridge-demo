@@ -1,26 +1,33 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
 import { useBridge } from '@/composables/useBridge'
 
+const { t, locale } = useI18n()
 const authStore = useAuthStore()
-const { connect, disconnect, navigate } = useBridge()
+const { connect, disconnect, navigate, syncState } = useBridge()
 
 const iframeRef = ref<HTMLIFrameElement | null>(null)
 
 // 動態產生 iframe URL，包含 token
 const legacyUrl = computed(() => {
-  const baseUrl = 'http://localhost:8080'
+  // 開發環境使用 localhost，生產環境使用相對路徑
+  const isDev = import.meta.env.DEV
+  const baseUrl = isDev 
+    ? 'http://localhost:8080'
+    : (import.meta.env.BASE_URL + 'legacy')
   const token = authStore.getToken()
-  return `${baseUrl}/?token=${token}`
+  const lang = locale.value
+  return `${baseUrl}/?token=${token}&lang=${lang}`
 })
 
 // 導航按鈕
-const routes = [
-  { path: '/', label: '首頁', icon: '🏠' },
-  { path: '/dashboard', label: '儀表板', icon: '📊' },
-  { path: '/settings', label: '設定', icon: '⚙️' }
-]
+const routes = computed(() => [
+  { path: '/', label: t('nav.home'), icon: '🏠' },
+  { path: '/dashboard', label: t('nav.dashboard'), icon: '📊' },
+  { path: '/settings', label: t('nav.settings'), icon: '⚙️' }
+])
 
 function handleNavigate(route: string) {
   navigate(route)
@@ -28,6 +35,16 @@ function handleNavigate(route: string) {
 
 function isActiveRoute(path: string): boolean {
   return authStore.currentLegacyRoute === path
+}
+
+function toggleLanguage() {
+  const newLocale = locale.value === 'zh' ? 'en' : 'zh'
+  locale.value = newLocale
+  localStorage.setItem('locale', newLocale)
+  // 通知 Vue2 語言變更
+  if (authStore.isLegacyReady) {
+    syncState('locale', newLocale)
+  }
 }
 
 function onIframeLoad() {
@@ -46,8 +63,8 @@ onUnmounted(() => {
     <nav class="nav-bar">
       <div class="nav-brand">
         <span class="brand-icon">🚀</span>
-        <span class="brand-text">Vue3 Host</span>
-        <span class="brand-badge">控制中</span>
+        <span class="brand-text">{{ $t('nav.brand') }}</span>
+        <span class="brand-badge">{{ $t('nav.control') }}</span>
       </div>
       <div class="nav-links">
         <button
@@ -62,8 +79,11 @@ onUnmounted(() => {
         </button>
       </div>
       <div class="nav-status">
+        <button class="lang-switch" @click="toggleLanguage">
+          {{ locale === 'zh' ? 'EN' : '中文' }}
+        </button>
         <span class="status-badge" :class="{ connected: authStore.isLegacyReady }">
-          {{ authStore.isLegacyReady ? '✓ Legacy 已連接' : '連接中...' }}
+          {{ authStore.isLegacyReady ? $t('nav.legacyConnected') : $t('nav.legacyConnecting') }}
         </span>
       </div>
     </nav>
@@ -78,7 +98,7 @@ onUnmounted(() => {
       
       <div class="iframe-overlay" v-if="!authStore.isLegacyReady">
         <div class="loading-spinner"></div>
-        <p>正在載入 Legacy App...</p>
+        <p>{{ $t('common.loading') }}</p>
       </div>
     </div>
   </div>
@@ -167,6 +187,23 @@ onUnmounted(() => {
 .nav-status {
   display: flex;
   align-items: center;
+  gap: 0.75rem;
+}
+
+.lang-switch {
+  padding: 0.25rem 0.75rem;
+  background: rgba(102, 126, 234, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 4px;
+  color: #667eea;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.lang-switch:hover {
+  background: rgba(102, 126, 234, 0.2);
 }
 
 .status-badge {

@@ -1,8 +1,8 @@
 <template>
   <div class="dashboard">
     <div class="dashboard-card">
-      <h1>📊 儀表板</h1>
-      <p class="subtitle">這是 Vue2 Legacy 的儀表板頁面</p>
+      <h1>📊 {{ $t('dashboard.title') }}</h1>
+      <p class="subtitle">{{ $t('dashboard.subtitle') }}</p>
 
       <div class="stats-grid">
         <div class="stat-card" v-for="stat in stats" :key="stat.label">
@@ -15,7 +15,7 @@
       </div>
 
       <div class="activity-section">
-        <h2>最近活動</h2>
+        <h2>{{ $t('dashboard.recentActivity') }}</h2>
         <ul class="activity-list">
           <li v-for="(activity, index) in activities" :key="index">
             <span class="activity-icon">{{ activity.icon }}</span>
@@ -45,12 +45,14 @@ interface Activity {
 
 @Component
 export default class Dashboard extends Vue {
-  stats: Stat[] = [
-    { icon: '👥', value: '1,234', label: '使用者' },
-    { icon: '📝', value: '567', label: '任務' },
-    { icon: '✅', value: '89%', label: '完成率' },
-    { icon: '⏱️', value: '24h', label: '回應時間' }
-  ]
+  get stats(): Stat[] {
+    return [
+      { icon: '👥', value: '1,234', label: this.$t('dashboard.users') as string },
+      { icon: '📝', value: '567', label: this.$t('dashboard.tasks') as string },
+      { icon: '✅', value: '89%', label: this.$t('dashboard.completion') as string },
+      { icon: '⏱️', value: '24h', label: this.$t('dashboard.responseTime') as string }
+    ]
+  }
 
   activities: Activity[] = [
     { icon: '🆕', text: '新增了一個任務', time: '5 分鐘前' },
