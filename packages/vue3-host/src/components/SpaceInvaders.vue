@@ -65,7 +65,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
   Engine,
@@ -146,25 +146,39 @@ let renderLoop: (() => void) | null = null
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v))
 
 // Simple audio beep
-const audioCtx = (() => {
+// 延遲初始化音頻上下文，直到用戶交互
+let audioCtx: AudioContext | null = null
+const getAudioContext = () => {
+  if (!audioCtx) {
   try {
-    return new (window.AudioContext || (window as any).webkitAudioContext)()
+      audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
   } catch {
     return null
   }
-})()
+  }
+  return audioCtx
+}
 
 const beep = (freq: number, dur = 0.05, gain = 0.05, type: OscillatorType = 'square') => {
-  if (!audioCtx) return
-  const o = audioCtx.createOscillator()
-  const g = audioCtx.createGain()
+  const ctx = getAudioContext()
+  if (!ctx) return
+  try {
+    // 如果音頻上下文被暫停，嘗試恢復
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch(() => {})
+    }
+    const o = ctx.createOscillator()
+    const g = ctx.createGain()
   o.type = type
   o.frequency.value = freq
   g.gain.value = gain
   o.connect(g)
-  g.connect(audioCtx.destination)
+    g.connect(ctx.destination)
   o.start()
-  o.stop(audioCtx.currentTime + dur)
+    o.stop(ctx.currentTime + dur)
+  } catch {
+    // 忽略音頻錯誤，不影響遊戲
+  }
 }
 
 const updateHUD = () => {
@@ -665,15 +679,25 @@ const handleVirtualShoot = (pressed: boolean) => {
 }
 
 const handleStart = () => {
+  // 初始化音頻上下文（需要用戶交互）
+  getAudioContext()
   try {
-    if (audioCtx && (audioCtx as any).resume) (audioCtx as any).resume()
+    const ctx = getAudioContext()
+    if (ctx && ctx.state === 'suspended') {
+      ctx.resume().catch(() => {})
+    }
   } catch {}
   startGame()
 }
 
 const handleRestart = () => {
+  // 初始化音頻上下文（需要用戶交互）
+  getAudioContext()
   try {
-    if (audioCtx && (audioCtx as any).resume) (audioCtx as any).resume()
+    const ctx = getAudioContext()
+    if (ctx && ctx.state === 'suspended') {
+      ctx.resume().catch(() => {})
+    }
   } catch {}
   resetGame()
   startGame()
@@ -724,8 +748,34 @@ function resume() {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
+  // 等待 DOM 完全渲染
+  await nextTick()
+  
   if (!canvasRef.value) return
+
+  // 確保 canvas 有正確的尺寸
+  const container = canvasRef.value.parentElement
+  if (container) {
+    const containerWidth = container.clientWidth
+    const containerHeight = container.clientHeight
+    
+    // 如果尺寸為 0，等待一下再初始化
+    if (containerWidth === 0 || containerHeight === 0) {
+      await new Promise(resolve => {
+        const checkSize = () => {
+          const w = container.clientWidth
+          const h = container.clientHeight
+          if (w > 0 && h > 0) {
+            resolve(undefined)
+          } else {
+            requestAnimationFrame(checkSize)
+          }
+        }
+        checkSize()
+      })
+    }
+  }
 
   // 創建引擎，啟用高 DPI 支援
   engine = new Engine(canvasRef.value, true, {
@@ -754,6 +804,33 @@ onMounted(() => {
       scene.render()
     }
   }
+  
+  // 確保引擎正確初始化尺寸
+  engine.resize()
+  
+  // 調整畫面縮放以適應容器
+  adjustCanvasScale()
+  
+  // 強制立即渲染多次，確保畫面顯示
+  if (scene && engine) {
+    // 立即渲染一次
+    scene.render()
+    
+    // 使用 requestAnimationFrame 確保在下一幀也渲染
+    requestAnimationFrame(() => {
+      if (scene && engine) {
+        scene.render()
+        // 再下一幀也渲染一次，確保畫面顯示
+        requestAnimationFrame(() => {
+          if (scene && engine) {
+            scene.render()
+          }
+        })
+      }
+    })
+  }
+  
+  // 啟動渲染循環
   engine.runRenderLoop(renderLoop)
 
   // 事件監聽
@@ -764,9 +841,6 @@ onMounted(() => {
   
   // 初始化螢幕大小檢查
   checkScreenSize()
-  
-  // 調整畫面縮放以適應容器
-  adjustCanvasScale()
 })
 
 onUnmounted(() => {
@@ -981,11 +1055,11 @@ defineExpose({
 }
 
 @media (max-width: 480px) {
-  .panel h1 {
-    font-size: 18px;
-    margin: 0 0 10px;
-  }
-  
+.panel h1 {
+  font-size: 18px;
+  margin: 0 0 10px;
+}
+
   .panel .description {
     font-size: 12px;
     margin: 0 0 16px;

@@ -18,7 +18,7 @@ const currentView = ref<'legacy' | 'earth3d'>('legacy')
 
 // 監聽路由變化，同步視圖狀態
 watch(() => route.path, (path) => {
-  if (path === '/earth') {
+  if (path === '/space-invaders') {
     currentView.value = 'earth3d'
   } else {
     currentView.value = 'legacy'

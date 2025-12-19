@@ -26,7 +26,7 @@ const legacyRoutes = computed(() => [
 ])
 
 const vue3Features = computed(() => [
-  { path: '/earth', label: t('nav.earth3d'), icon: '🌍', type: 'vue3' as const }
+  { path: '/space-invaders', label: t('nav.earth3d'), icon: '🎮', type: 'vue3' as const }
 ])
 
 function handleNavigate(routePath: string, type: 'legacy' | 'vue3') {

@@ -11,10 +11,10 @@ const router = createRouter({
       meta: { title: 'Legacy App' }
     },
     {
-      path: '/earth',
-      name: 'earth3d',
+      path: '/space-invaders',
+      name: 'spaceInvaders',
       component: LegacyContainer,
-      meta: { title: '3D Earth' }
+      meta: { title: 'Space Invaders' }
     }
   ]
 })
