@@ -30,7 +30,17 @@
     "tasks": "Tasks",
     "completion": "Completion Rate",
     "responseTime": "Response Time",
-    "recentActivity": "Recent Activity"
+    "recentActivity": "Recent Activity",
+    "activity": {
+      "newTask": "Created a new task",
+      "updatedSettings": "Updated user settings",
+      "systemNotification": "Received system notification",
+      "reportExported": "Report export completed"
+    },
+    "time": {
+      "minutesAgo": "{count} minutes ago",
+      "hoursAgo": "{count} hours ago"
+    }
   },
   "settings": {
     "title": "Settings",

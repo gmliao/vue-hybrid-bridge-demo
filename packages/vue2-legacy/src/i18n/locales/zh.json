@@ -30,7 +30,17 @@
     "tasks": "任務",
     "completion": "完成率",
     "responseTime": "回應時間",
-    "recentActivity": "最近活動"
+    "recentActivity": "最近活動",
+    "activity": {
+      "newTask": "新增了一個任務",
+      "updatedSettings": "更新了使用者設定",
+      "systemNotification": "收到系統通知",
+      "reportExported": "匯出報表完成"
+    },
+    "time": {
+      "minutesAgo": "{count} 分鐘前",
+      "hoursAgo": "{count} 小時前"
+    }
   },
   "settings": {
     "title": "設定",

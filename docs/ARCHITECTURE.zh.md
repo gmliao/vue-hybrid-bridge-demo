@@ -10,8 +10,12 @@
 flowchart TB
     subgraph Vue3Host [Vue3 Host - Shell]
         Pinia[Pinia Store]
-        LegacyFrame[LegacyFrame.vue]
+        LegacyContainer[LegacyContainer.vue]
+        ContentArea[ContentArea.vue]
+        NavigationBar[NavigationBar.vue]
         UseBridge[useBridge Composable]
+        SpaceInvaders[SpaceInvaders.vue<br/>Vue3 原生功能]
+        Vue2Iframe[Vue2Iframe.vue]
     end
     
     subgraph Vue2Legacy [Vue2 Legacy - iframe]
@@ -27,6 +31,10 @@ flowchart TB
         GuestBridge[GuestBridge]
     end
     
+    LegacyContainer --> NavigationBar
+    LegacyContainer --> ContentArea
+    ContentArea --> Vue2Iframe
+    ContentArea --> SpaceInvaders
     Vue3Host -->|"iframe src=?token=XXX"| Vue2Legacy
     Vue2Legacy -->|"READY / AUTH_READY"| Vue3Host
     Vue3Host -->|"NAVIGATE"| Vue2Legacy
@@ -44,8 +52,12 @@ flowchart TB
 
 | 元件 | 檔案 | 職責 |
 |------|------|------|
-| App | `App.vue` | 根容器，僅包含 LegacyFrame |
-| LegacyFrame | `LegacyFrame.vue` | iframe 容器、導航列、路由狀態顯示 |
+| App | `App.vue` | 根容器，router view |
+| LegacyContainer | `components/LegacyContainer.vue` | 主容器，管理視圖切換 |
+| NavigationBar | `components/NavigationBar.vue` | 導航列、路由按鈕、語言切換 |
+| ContentArea | `components/ContentArea.vue` | 內容區域，在 Legacy iframe 和 Vue3 功能間切換 |
+| Vue2Iframe | `components/Vue2Iframe.vue` | Vue2 Legacy 的 iframe 包裝器 |
+| SpaceInvaders | `components/SpaceInvaders.vue` | Vue3 原生 3D 遊戲（Babylon.js），展示 Vue3 能力 |
 | useBridge | `composables/useBridge.ts` | Bridge 連接與事件處理 |
 | auth store | `stores/auth.ts` | 認證狀態、Legacy 路由狀態 |
 
@@ -119,6 +131,8 @@ sequenceDiagram
 | Vite | 5.x | 建構工具 |
 | Pinia | 2.x | 狀態管理 |
 | TypeScript | 5.x | 型別系統 |
+| Babylon.js | 8.x | 3D 渲染引擎（用於 Space Invaders） |
+| vue-i18n | 9.x | 國際化 |
 
 ### Vue2 Legacy
 
@@ -161,6 +175,21 @@ sequenceDiagram
 - 與既有 Vue2 專案風格一致
 - 更好的 TypeScript 支援
 - 裝飾器語法更直觀
+
+### 5. Vue3 原生功能
+
+Vue3 Host 可以在 Legacy iframe 旁邊運行原生 Vue3 功能：
+
+- **Space Invaders 3D 遊戲**：展示 Vue3 運行現代 3D 應用的能力
+- **獨立路由**：Vue3 功能使用 Vue Router，與 Vue2 路由分離
+- **視圖切換**：`ContentArea` 組件在 Legacy iframe 和 Vue3 功能間切換
+- **響應式設計**：完整支援桌面、平板、手機的 RWD
+- **虛擬控制**：手機遊戲的觸控友善控制
+
+**架構模式：**
+- Legacy 路由：透過 Bridge 控制，在 iframe 中顯示
+- Vue3 路由：原生 Vue Router，以 Vue3 組件顯示
+- 導航：統一的導航列控制兩種類型
 
 ---
 

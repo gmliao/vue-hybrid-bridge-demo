@@ -14,7 +14,8 @@
 2. Vue2 端整合 GuestBridge
 3. Vue3 端整合 HostBridge
 4. 實作 iframe 模式偵測
-5. 測試與驗證
+5. 添加 Vue3 原生功能（選用）
+6. 測試與驗證
 
 ---
 
@@ -183,38 +184,219 @@ export const useAuthStore = defineStore('auth', () => {
 })
 ```
 
-### 3.3 建立 iframe 容器
+### 3.3 建立容器組件
+
+#### LegacyContainer.vue
 
 ```vue
 <template>
-  <div class="frame-container">
-    <nav class="nav-bar">
-      <button
-        v-for="route in routes"
-        :class="{ active: currentRoute === route.path }"
-        @click="navigate(route.path)"
-      >
-        {{ route.label }}
-      </button>
-    </nav>
-    <iframe
+  <div class="legacy-container">
+    <NavigationBar
+      :current-view="currentView"
+      :current-legacy-route="authStore.currentLegacyRoute"
+      @navigate="handleNavigate"
+    />
+    <ContentArea :view="currentView" />
+  </div>
+</template>
+
+<script setup>
+import { ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import NavigationBar from './NavigationBar.vue'
+import ContentArea from './ContentArea.vue'
+
+const route = useRoute()
+const currentView = ref<'legacy' | 'vue3-feature'>('legacy')
+
+watch(() => route.path, (path) => {
+  currentView.value = path === '/space-invaders' ? 'vue3-feature' : 'legacy'
+}, { immediate: true })
+</script>
+```
+
+#### ContentArea.vue
+
+```vue
+<template>
+  <div class="content-wrapper">
+    <Vue2Iframe
+      v-show="view === 'legacy'"
       ref="iframeRef"
       :src="legacyUrl"
-      @load="onLoad"
+      @load="onIframeLoad"
+    />
+    <SpaceInvaders
+      v-show="view === 'vue3-feature'"
+      ref="spaceInvadersRef"
     />
   </div>
 </template>
 
 <script setup>
+import { ref, computed } from 'vue'
+import Vue2Iframe from './Vue2Iframe.vue'
+import SpaceInvaders from './SpaceInvaders.vue'
+import { useBridge } from '@/composables/useBridge'
+
+const props = defineProps<{
+  view: 'legacy' | 'vue3-feature'
+}>()
+
+const { connect } = useBridge()
+const iframeRef = ref()
 const legacyUrl = computed(() => {
   return `${LEGACY_BASE_URL}/?token=${getToken()}`
 })
+
+function onIframeLoad() {
+  if (iframeRef.value?.iframeRef) {
+    connect(iframeRef.value.iframeRef)
+  }
+}
 </script>
+```
+
+#### NavigationBar.vue
+
+```vue
+<template>
+  <nav class="nav-bar">
+    <!-- Legacy 路由 -->
+    <button
+      v-for="route in legacyRoutes"
+      :class="{ active: currentView === 'legacy' && isActiveRoute(route.path) }"
+      @click="$emit('navigate', route.path, 'legacy')"
+    >
+      {{ route.label }}
+    </button>
+    
+    <div class="nav-divider"></div>
+    
+    <!-- Vue3 原生功能 -->
+    <button
+      v-for="feature in vue3Features"
+      :class="{ active: currentView === 'vue3-feature' }"
+      @click="$emit('navigate', feature.path, 'vue3')"
+    >
+      {{ feature.label }}
+    </button>
+  </nav>
+</template>
 ```
 
 ---
 
-## Step 4: Message Protocol
+## Step 4: 添加 Vue3 原生功能
+
+### 4.1 建立 Vue3 功能組件
+
+範例：Space Invaders 3D 遊戲
+
+```vue
+<!-- components/SpaceInvaders.vue -->
+<template>
+  <div class="space-invaders-container">
+    <canvas ref="canvasRef"></canvas>
+    <!-- 遊戲 UI -->
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
+import { Engine, Scene } from '@babylonjs/core'
+
+const canvasRef = ref<HTMLCanvasElement | null>(null)
+let engine: Engine | null = null
+
+onMounted(() => {
+  if (!canvasRef.value) return
+  
+  engine = new Engine(canvasRef.value, true, {
+    adaptToDeviceRatio: true, // 啟用高 DPI 支援
+  })
+  
+  const scene = createScene(engine)
+  engine.runRenderLoop(() => scene.render())
+})
+
+onUnmounted(() => {
+  engine?.dispose()
+})
+</script>
+```
+
+### 4.2 添加路由
+
+在 `router/index.ts` 中：
+
+```typescript
+import { createRouter, createWebHistory } from 'vue-router'
+import LegacyContainer from '@/components/LegacyContainer.vue'
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    {
+      path: '/',
+      component: LegacyContainer,
+    },
+    {
+      path: '/space-invaders',
+      component: LegacyContainer,
+      meta: { view: 'vue3-feature' }
+    }
+  ]
+})
+```
+
+### 4.3 更新導航
+
+在 `NavigationBar.vue` 中：
+
+```typescript
+const vue3Features = computed(() => [
+  { 
+    path: '/space-invaders', 
+    label: t('nav.spaceInvaders'), 
+    icon: '🎮',
+    type: 'vue3' as const 
+  }
+])
+```
+
+### 4.4 響應式設計
+
+為手機/平板添加 RWD 支援：
+
+```css
+/* 手機虛擬控制 */
+@media (max-width: 1024px) {
+  .virtual-controls {
+    display: flex;
+  }
+}
+```
+
+### 4.5 國際化
+
+添加 i18n 鍵值：
+
+```json
+{
+  "nav": {
+    "spaceInvaders": "Space Invaders"
+  },
+  "spaceInvaders": {
+    "title": "Space Invaders (Babylon.js 3D)",
+    "startGame": "開始遊戲"
+  }
+}
+```
+
+---
+
+## Step 5: Message Protocol
 
 ### 可用訊息類型
 
@@ -244,7 +426,7 @@ bridge.on('EVENT', (message) => {
 
 ---
 
-## Step 5: 驗證清單
+## Step 6: 驗證清單
 
 ### 功能驗證
 
@@ -256,6 +438,10 @@ bridge.on('EVENT', (message) => {
 - [ ] Vue2 在 iframe 中隱藏導航列
 - [ ] Vue2 獨立存取時顯示導航列
 - [ ] 未帶 token 時 Vue2 顯示未登入狀態
+- [ ] Vue3 原生功能可透過導航存取
+- [ ] Legacy 和 Vue3 功能間的視圖切換正常運作
+- [ ] 響應式設計在手機/平板上正常運作
+- [ ] 虛擬控制在觸控設備上正常運作（如適用）
 
 ### 約束驗證
 
@@ -311,7 +497,9 @@ kill -9 <PID>
 完整範例請參考：
 
 - Vue2 入口：`packages/vue2-legacy/src/main.ts`
-- Vue3 容器：`packages/vue3-host/src/components/LegacyFrame.vue`
+- Vue3 容器：`packages/vue3-host/src/components/LegacyContainer.vue`
+- Vue3 內容區域：`packages/vue3-host/src/components/ContentArea.vue`
+- Vue3 原生功能：`packages/vue3-host/src/components/SpaceInvaders.vue`
 - Bridge API：`packages/shared-bridge/README.md`
 
 ---

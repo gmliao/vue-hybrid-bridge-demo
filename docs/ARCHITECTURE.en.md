@@ -6,8 +6,12 @@
 flowchart TB
     subgraph Vue3Host [Vue3 Host - Shell]
         Pinia[Pinia Store]
-        LegacyFrame[LegacyFrame.vue]
+        LegacyContainer[LegacyContainer.vue]
+        ContentArea[ContentArea.vue]
+        NavigationBar[NavigationBar.vue]
         UseBridge[useBridge Composable]
+        SpaceInvaders[SpaceInvaders.vue<br/>Vue3 Native Feature]
+        Vue2Iframe[Vue2Iframe.vue]
     end
     
     subgraph Vue2Legacy [Vue2 Legacy - iframe]
@@ -23,6 +27,10 @@ flowchart TB
         GuestBridge[GuestBridge]
     end
     
+    LegacyContainer --> NavigationBar
+    LegacyContainer --> ContentArea
+    ContentArea --> Vue2Iframe
+    ContentArea --> SpaceInvaders
     Vue3Host -->|"iframe src=?token=XXX"| Vue2Legacy
     Vue2Legacy -->|"READY / AUTH_READY"| Vue3Host
     Vue3Host -->|"NAVIGATE"| Vue2Legacy
@@ -40,8 +48,12 @@ flowchart TB
 
 | Component | File | Responsibility |
 |-----------|------|----------------|
-| App | `App.vue` | Root container, only contains LegacyFrame |
-| LegacyFrame | `LegacyFrame.vue` | iframe container, navigation bar, route status display |
+| App | `App.vue` | Root container, router view |
+| LegacyContainer | `components/LegacyContainer.vue` | Main container, manages view switching |
+| NavigationBar | `components/NavigationBar.vue` | Navigation bar, route buttons, language toggle |
+| ContentArea | `components/ContentArea.vue` | Content area, switches between Legacy iframe and Vue3 features |
+| Vue2Iframe | `components/Vue2Iframe.vue` | iframe wrapper for Vue2 Legacy |
+| SpaceInvaders | `components/SpaceInvaders.vue` | Vue3 native 3D game (Babylon.js), demonstrates Vue3 capabilities |
 | useBridge | `composables/useBridge.ts` | Bridge connection and event handling |
 | auth store | `stores/auth.ts` | Authentication state, Legacy route state |
 
@@ -115,6 +127,8 @@ sequenceDiagram
 | Vite | 5.x | Build tool |
 | Pinia | 2.x | State management |
 | TypeScript | 5.x | Type system |
+| Babylon.js | 8.x | 3D rendering engine (for Space Invaders) |
+| vue-i18n | 9.x | Internationalization |
 
 ### Vue2 Legacy
 
@@ -157,6 +171,21 @@ sequenceDiagram
 - Consistent with existing Vue2 project style
 - Better TypeScript support
 - More intuitive decorator syntax
+
+### 5. Vue3 Native Features
+
+Vue3 Host can host native Vue3 features alongside the Legacy iframe:
+
+- **Space Invaders 3D Game**: Demonstrates Vue3's capability to run modern 3D applications
+- **Independent Routing**: Vue3 features use Vue Router, separate from Vue2 routes
+- **View Switching**: `ContentArea` component switches between Legacy iframe and Vue3 features
+- **Responsive Design**: Full RWD support for desktop, tablet, and mobile
+- **Virtual Controls**: Touch-friendly controls for mobile gaming
+
+**Architecture Pattern:**
+- Legacy routes: Controlled via Bridge, displayed in iframe
+- Vue3 routes: Native Vue Router, displayed as Vue3 components
+- Navigation: Unified navigation bar controls both types
 
 ---
 

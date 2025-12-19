@@ -6,10 +6,41 @@
     "legacyConnecting": "Connecting...",
     "home": "Home",
     "dashboard": "Dashboard",
-    "settings": "Settings"
+    "settings": "Settings",
+    "earth3d": "Space Invaders"
   },
   "common": {
     "loading": "Loading Legacy App..."
+  },
+  "earth3d": {
+    "title": "3D Earth Visualization",
+    "subtitle": "Powered by Vue3 + Babylon.js",
+    "play": "Play",
+    "pause": "Pause",
+    "reset": "Reset Camera",
+    "technology": "Technology",
+    "status": "Status",
+    "ready": "Ready",
+    "loading": "Loading...",
+    "backToLegacy": "Back to Legacy"
+  },
+  "spaceInvaders": {
+    "title": "Space Invaders (Babylon.js 3D)",
+    "description": "This 3D game runs in the Vue3 environment, demonstrating how Vue3 Host correctly integrates new and legacy environments. Powered by Babylon.js rendering engine for smooth 3D gaming experience.",
+    "score": "Score",
+    "lives": "Lives",
+    "level": "Level",
+    "controls": "Controls",
+    "controlsDesc": "← → Move, Space Shoot, P Pause",
+    "visual": "Visual",
+    "visualDesc": "Perspective Camera + Shadows",
+    "startGame": "Start Game",
+    "restart": "Restart",
+    "paused": "Paused - Press P to Continue",
+    "gameOver": "Game Over",
+    "gameOverText": "Your Score: {score}. {reason} Click \"Restart\" to play again.",
+    "gameOverReasonLives": "Lives depleted.",
+    "gameOverReasonInvaders": "Invaders reached the bottom line."
   }
 }
 

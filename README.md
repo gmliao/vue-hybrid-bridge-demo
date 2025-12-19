@@ -15,11 +15,14 @@ This project is a technical demonstration that integrates Vue2 Legacy into Vue3 
 **Key Features:**
 - Top white navigation bar is controlled by **Vue3 Host** (shows "Vue3 Host In Control" badge)
 - Navigation buttons (Home, Dashboard, Settings) control Vue2 routes from Vue3
+- **Space Invaders** button opens Vue3 native 3D game (Babylon.js powered)
 - Top right shows language toggle button (中文/EN) and Legacy connection status
 - Bottom purple area is **Vue2 Legacy** iframe content
 - Vue2 automatically hides native navigation bar in iframe mode
 - Login status is passed via URL token, verified by Vue2 and reported to Vue3
 - **Language Toggle**: Default English, click top right language button (shows "中文") to switch to Chinese, Vue3 and Vue2 languages sync
+- **Responsive Design**: Fully responsive layout adapts to desktop, tablet, and mobile screens
+- **Virtual Controls**: Touch-friendly game controls for mobile/tablet devices
 
 ## Quick Start
 
@@ -115,6 +118,10 @@ vue-hybrid-bridge-demo/
 | TypeScript Support | Both sides use TypeScript |
 | Class Style Components | Vue2 uses vue-class-component |
 | **Language Toggle** | **Default English, supports switching to Chinese, Vue3/Vue2 language sync** |
+| **Space Invaders 3D Game** | **Vue3 native 3D game powered by Babylon.js, demonstrates Vue3 Host capabilities** |
+| **Responsive Design (RWD)** | **Full responsive support for desktop, tablet, and mobile devices** |
+| **Virtual Controls** | **Touch-friendly virtual buttons for mobile/tablet gaming** |
+| **High DPI Support** | **Automatic high-resolution display support for Retina and high-DPI screens** |
 
 ---
 

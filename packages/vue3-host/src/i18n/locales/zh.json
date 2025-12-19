@@ -6,10 +6,41 @@
     "legacyConnecting": "連接中...",
     "home": "首頁",
     "dashboard": "儀表板",
-    "settings": "設定"
+    "settings": "設定",
+    "earth3d": "Space Invaders"
   },
   "common": {
     "loading": "正在載入 Legacy App..."
+  },
+  "earth3d": {
+    "title": "3D 地球視覺化",
+    "subtitle": "使用 Vue3 + Babylon.js 打造",
+    "play": "播放",
+    "pause": "暫停",
+    "reset": "重置視角",
+    "technology": "技術",
+    "status": "狀態",
+    "ready": "就緒",
+    "loading": "載入中...",
+    "backToLegacy": "返回 Legacy"
+  },
+  "spaceInvaders": {
+    "title": "Space Invaders（Babylon.js 3D）",
+    "description": "這是在 Vue3 新環境中執行的 3D 遊戲，展示了 Vue3 Host 如何正確整合新舊環境。使用 Babylon.js 渲染引擎，提供流暢的 3D 遊戲體驗。",
+    "score": "分數",
+    "lives": "生命",
+    "level": "關卡",
+    "controls": "操作",
+    "controlsDesc": "← → 移動、Space 射擊、P 暫停",
+    "visual": "視覺",
+    "visualDesc": "透視鏡頭＋陰影",
+    "startGame": "開始遊戲",
+    "restart": "重新開始",
+    "paused": "暫停中 - 按 P 繼續",
+    "gameOver": "遊戲結束",
+    "gameOverText": "你的分數：{score}。{reason} 點「重新開始」再來一次。",
+    "gameOverReasonLives": "生命歸零。",
+    "gameOverReasonInvaders": "外星人已逼近底線。"
   }
 }
 

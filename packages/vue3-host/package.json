@@ -11,10 +11,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@babylonjs/core": "^8.42.0",
+    "@babylonjs/loaders": "^8.42.0",
     "@vue-hybrid-bridge/shared-bridge": "1.0.0",
     "pinia": "^2.1.7",
     "vue": "^3.4.15",
-    "vue-i18n": "^9.8.0"
+    "vue-i18n": "^9.8.0",
+    "vue-router": "^4.6.4"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.3",
@@ -23,4 +26,3 @@
     "vue-tsc": "^1.8.27"
   }
 }
-

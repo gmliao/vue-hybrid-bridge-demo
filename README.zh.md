@@ -17,11 +17,14 @@
 **功能展示：**
 - 上方白色導航列為 **Vue3 Host** 控制（顯示「Vue3 Host 控制中」標籤）
 - 導航按鈕（首頁、儀表板、設定）由 Vue3 控制 Vue2 路由
+- **Space Invaders** 按鈕開啟 Vue3 原生 3D 遊戲（使用 Babylon.js 引擎）
 - 右上角顯示語言切換按鈕（中文/EN）和 Legacy 連接狀態
 - 下方紫色區域為 **Vue2 Legacy** iframe 內容
 - Vue2 在 iframe 模式下自動隱藏原生導航列
 - 登入狀態透過 URL token 傳遞，由 Vue2 驗證後回報給 Vue3
 - **中英文切換**：預設英文，點擊右上角語言按鈕（顯示「中文」）可切換至中文，Vue3 與 Vue2 語言同步
+- **響應式設計**：完整支援桌面、平板、手機等各種螢幕尺寸
+- **虛擬控制**：手機/平板設備提供觸控友善的遊戲控制按鈕
 
 ## 快速啟動（Quick Start）
 
@@ -117,6 +120,10 @@ vue-hybrid-bridge-demo/
 | TypeScript 支援 | 兩端皆使用 TypeScript |
 | 類別風格組件 | Vue2 使用 vue-class-component |
 | **中英文切換** | **預設英文，支援切換至中文，Vue3/Vue2 語言同步** |
+| **Space Invaders 3D 遊戲** | **Vue3 原生 3D 遊戲，使用 Babylon.js 引擎，展示 Vue3 Host 能力** |
+| **響應式設計 (RWD)** | **完整支援桌面、平板、手機等各種螢幕尺寸** |
+| **虛擬控制** | **手機/平板設備提供觸控友善的虛擬按鈕** |
+| **高解析度支援** | **自動支援 Retina 及高 DPI 螢幕的高解析度顯示** |
 
 ---
 

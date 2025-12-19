@@ -54,12 +54,30 @@ export default class Dashboard extends Vue {
     ]
   }
 
-  activities: Activity[] = [
-    { icon: '🆕', text: '新增了一個任務', time: '5 分鐘前' },
-    { icon: '✏️', text: '更新了使用者設定', time: '15 分鐘前' },
-    { icon: '🔔', text: '收到系統通知', time: '1 小時前' },
-    { icon: '📤', text: '匯出報表完成', time: '2 小時前' }
-  ]
+  get activities(): Activity[] {
+    return [
+      { 
+        icon: '🆕', 
+        text: this.$t('dashboard.activity.newTask') as string, 
+        time: this.$t('dashboard.time.minutesAgo', { count: 5 }) as string 
+      },
+      { 
+        icon: '✏️', 
+        text: this.$t('dashboard.activity.updatedSettings') as string, 
+        time: this.$t('dashboard.time.minutesAgo', { count: 15 }) as string 
+      },
+      { 
+        icon: '🔔', 
+        text: this.$t('dashboard.activity.systemNotification') as string, 
+        time: this.$t('dashboard.time.hoursAgo', { count: 1 }) as string 
+      },
+      { 
+        icon: '📤', 
+        text: this.$t('dashboard.activity.reportExported') as string, 
+        time: this.$t('dashboard.time.hoursAgo', { count: 2 }) as string 
+      }
+    ]
+  }
 }
 </script>
 

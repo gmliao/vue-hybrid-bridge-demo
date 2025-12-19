@@ -10,7 +10,8 @@ This document explains how to apply this Demo's pattern to real projects.
 2. Integrate GuestBridge on Vue2 side
 3. Integrate HostBridge on Vue3 side
 4. Implement iframe mode detection
-5. Testing and validation
+5. Add Vue3 native features (optional)
+6. Testing and validation
 
 ---
 
@@ -179,38 +180,219 @@ export const useAuthStore = defineStore('auth', () => {
 })
 ```
 
-### 3.3 Create iframe Container
+### 3.3 Create Container Components
+
+#### LegacyContainer.vue
 
 ```vue
 <template>
-  <div class="frame-container">
-    <nav class="nav-bar">
-      <button
-        v-for="route in routes"
-        :class="{ active: currentRoute === route.path }"
-        @click="navigate(route.path)"
-      >
-        {{ route.label }}
-      </button>
-    </nav>
-    <iframe
+  <div class="legacy-container">
+    <NavigationBar
+      :current-view="currentView"
+      :current-legacy-route="authStore.currentLegacyRoute"
+      @navigate="handleNavigate"
+    />
+    <ContentArea :view="currentView" />
+  </div>
+</template>
+
+<script setup>
+import { ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import NavigationBar from './NavigationBar.vue'
+import ContentArea from './ContentArea.vue'
+
+const route = useRoute()
+const currentView = ref<'legacy' | 'vue3-feature'>('legacy')
+
+watch(() => route.path, (path) => {
+  currentView.value = path === '/space-invaders' ? 'vue3-feature' : 'legacy'
+}, { immediate: true })
+</script>
+```
+
+#### ContentArea.vue
+
+```vue
+<template>
+  <div class="content-wrapper">
+    <Vue2Iframe
+      v-show="view === 'legacy'"
       ref="iframeRef"
       :src="legacyUrl"
-      @load="onLoad"
+      @load="onIframeLoad"
+    />
+    <SpaceInvaders
+      v-show="view === 'vue3-feature'"
+      ref="spaceInvadersRef"
     />
   </div>
 </template>
 
 <script setup>
+import { ref, computed } from 'vue'
+import Vue2Iframe from './Vue2Iframe.vue'
+import SpaceInvaders from './SpaceInvaders.vue'
+import { useBridge } from '@/composables/useBridge'
+
+const props = defineProps<{
+  view: 'legacy' | 'vue3-feature'
+}>()
+
+const { connect } = useBridge()
+const iframeRef = ref()
 const legacyUrl = computed(() => {
   return `${LEGACY_BASE_URL}/?token=${getToken()}`
 })
+
+function onIframeLoad() {
+  if (iframeRef.value?.iframeRef) {
+    connect(iframeRef.value.iframeRef)
+  }
+}
 </script>
+```
+
+#### NavigationBar.vue
+
+```vue
+<template>
+  <nav class="nav-bar">
+    <!-- Legacy routes -->
+    <button
+      v-for="route in legacyRoutes"
+      :class="{ active: currentView === 'legacy' && isActiveRoute(route.path) }"
+      @click="$emit('navigate', route.path, 'legacy')"
+    >
+      {{ route.label }}
+    </button>
+    
+    <div class="nav-divider"></div>
+    
+    <!-- Vue3 native features -->
+    <button
+      v-for="feature in vue3Features"
+      :class="{ active: currentView === 'vue3-feature' }"
+      @click="$emit('navigate', feature.path, 'vue3')"
+    >
+      {{ feature.label }}
+    </button>
+  </nav>
+</template>
 ```
 
 ---
 
-## Step 4: Message Protocol
+## Step 4: Add Vue3 Native Features
+
+### 4.1 Create Vue3 Feature Component
+
+Example: Space Invaders 3D Game
+
+```vue
+<!-- components/SpaceInvaders.vue -->
+<template>
+  <div class="space-invaders-container">
+    <canvas ref="canvasRef"></canvas>
+    <!-- Game UI -->
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
+import { Engine, Scene } from '@babylonjs/core'
+
+const canvasRef = ref<HTMLCanvasElement | null>(null)
+let engine: Engine | null = null
+
+onMounted(() => {
+  if (!canvasRef.value) return
+  
+  engine = new Engine(canvasRef.value, true, {
+    adaptToDeviceRatio: true, // Enable high DPI support
+  })
+  
+  const scene = createScene(engine)
+  engine.runRenderLoop(() => scene.render())
+})
+
+onUnmounted(() => {
+  engine?.dispose()
+})
+</script>
+```
+
+### 4.2 Add Route
+
+In `router/index.ts`:
+
+```typescript
+import { createRouter, createWebHistory } from 'vue-router'
+import LegacyContainer from '@/components/LegacyContainer.vue'
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    {
+      path: '/',
+      component: LegacyContainer,
+    },
+    {
+      path: '/space-invaders',
+      component: LegacyContainer,
+      meta: { view: 'vue3-feature' }
+    }
+  ]
+})
+```
+
+### 4.3 Update Navigation
+
+In `NavigationBar.vue`:
+
+```typescript
+const vue3Features = computed(() => [
+  { 
+    path: '/space-invaders', 
+    label: t('nav.spaceInvaders'), 
+    icon: '🎮',
+    type: 'vue3' as const 
+  }
+])
+```
+
+### 4.4 Responsive Design
+
+Add RWD support for mobile/tablet:
+
+```css
+/* Virtual controls for mobile */
+@media (max-width: 1024px) {
+  .virtual-controls {
+    display: flex;
+  }
+}
+```
+
+### 4.5 Internationalization
+
+Add i18n keys:
+
+```json
+{
+  "nav": {
+    "spaceInvaders": "Space Invaders"
+  },
+  "spaceInvaders": {
+    "title": "Space Invaders (Babylon.js 3D)",
+    "startGame": "Start Game"
+  }
+}
+```
+
+---
+
+## Step 5: Message Protocol
 
 ### Available Message Types
 
@@ -240,7 +422,7 @@ bridge.on('EVENT', (message) => {
 
 ---
 
-## Step 5: Validation Checklist
+## Step 6: Validation Checklist
 
 ### Feature Validation
 
@@ -252,6 +434,10 @@ bridge.on('EVENT', (message) => {
 - [ ] Vue2 hides navigation bar in iframe
 - [ ] Vue2 shows navigation bar when accessed standalone
 - [ ] Vue2 shows unauthenticated state when no token
+- [ ] Vue3 native features can be accessed via navigation
+- [ ] View switching between Legacy and Vue3 features works correctly
+- [ ] Responsive design works on mobile/tablet
+- [ ] Virtual controls work on touch devices (if applicable)
 
 ### Constraint Validation
 
@@ -308,7 +494,9 @@ Ensure `tsconfig.json` includes:
 Complete examples can be found in:
 
 - Vue2 entry: `packages/vue2-legacy/src/main.ts`
-- Vue3 container: `packages/vue3-host/src/components/LegacyFrame.vue`
+- Vue3 container: `packages/vue3-host/src/components/LegacyContainer.vue`
+- Vue3 content area: `packages/vue3-host/src/components/ContentArea.vue`
+- Vue3 native feature: `packages/vue3-host/src/components/SpaceInvaders.vue`
 - Bridge API: `packages/shared-bridge/README.md`
 
 ---

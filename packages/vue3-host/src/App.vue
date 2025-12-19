@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import LegacyFrame from '@/components/LegacyFrame.vue'
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
   <div class="app">
-    <LegacyFrame />
+    <RouterView />
   </div>
 </template>
 
