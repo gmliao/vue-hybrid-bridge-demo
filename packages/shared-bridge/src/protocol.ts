@@ -40,6 +40,8 @@ export type MessageHandler<T extends BridgeMessage = BridgeMessage> = (message: 
 export interface BridgeOptions {
   /** 目標 origin，預設為 '*' */
   targetOrigin?: string
+  /** 允許接收的來源 origin 清單（未設定時會嘗試使用 targetOrigin，若仍為空則拒收） */
+  allowedOrigins?: string[]
   /** 是否啟用除錯模式 */
   debug?: boolean
 }
@@ -73,4 +75,3 @@ export function isValidBridgeMessage(data: unknown): data is BridgeMessage {
       return false
   }
 }
-

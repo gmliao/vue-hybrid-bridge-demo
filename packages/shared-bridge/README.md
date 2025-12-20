@@ -25,7 +25,12 @@ Vue3 Host 與 Vue2 Legacy 之間的 postMessage 通訊協議庫。
 ```typescript
 import { HostBridge } from '@vue-hybrid-bridge/shared-bridge'
 
-const bridge = new HostBridge({ debug: true })
+const legacyOrigin = 'https://legacy.example.com'
+const bridge = new HostBridge({
+  debug: true,
+  targetOrigin: legacyOrigin,
+  allowedOrigins: [legacyOrigin]
+})
 
 // 連接到 iframe
 const iframe = document.querySelector('iframe')
@@ -58,7 +63,12 @@ bridge.disconnect()
 ```typescript
 import { GuestBridge } from '@vue-hybrid-bridge/shared-bridge'
 
-const bridge = new GuestBridge({ debug: true })
+const hostOrigin = 'https://host.example.com'
+const bridge = new GuestBridge({
+  debug: true,
+  targetOrigin: hostOrigin,
+  allowedOrigins: [hostOrigin]
+})
 
 // 初始化連接
 bridge.connect()
@@ -110,6 +120,8 @@ interface User {
 interface BridgeOptions {
   /** 目標 origin，預設為 '*' */
   targetOrigin?: string
+  /** 允許接收的來源 origin 清單（未設定時會嘗試使用 targetOrigin） */
+  allowedOrigins?: string[]
   /** 是否啟用除錯模式 */
   debug?: boolean
 }
@@ -134,7 +146,12 @@ interface BridgeOptions {
 ### 範例
 
 ```typescript
-const bridge = new HostBridge({ debug: true })
+const legacyOrigin = 'https://legacy.example.com'
+const bridge = new HostBridge({
+  debug: true,
+  targetOrigin: legacyOrigin,
+  allowedOrigins: [legacyOrigin]
+})
 
 // 連接
 bridge.connect(iframeElement)
@@ -176,7 +193,12 @@ bridge.disconnect()
 ### 範例
 
 ```typescript
-const bridge = new GuestBridge({ debug: true })
+const hostOrigin = 'https://host.example.com'
+const bridge = new GuestBridge({
+  debug: true,
+  targetOrigin: hostOrigin,
+  allowedOrigins: [hostOrigin]
+})
 
 bridge.connect()
 
@@ -310,25 +332,30 @@ window.addEventListener('message', (event) => {
 
 ## 安全性建議
 
-### 指定 targetOrigin
+### 指定 origin allowlist
 
 ```typescript
 // 生產環境
+const legacyOrigin = 'https://legacy.example.com'
 const bridge = new HostBridge({
-  targetOrigin: 'https://legacy.example.com'
+  targetOrigin: legacyOrigin,
+  allowedOrigins: [legacyOrigin]
 })
 
+const hostOrigin = 'https://host.example.com'
 const bridge = new GuestBridge({
-  targetOrigin: 'https://host.example.com'
+  targetOrigin: hostOrigin,
+  allowedOrigins: [hostOrigin]
 })
 ```
 
 ### 開發環境
 
 ```typescript
-// 開發時可使用 '*'
+// 開發時使用明確 origin（可由環境變數注入）
 const bridge = new HostBridge({
-  targetOrigin: '*',
+  targetOrigin: 'http://localhost:8080',
+  allowedOrigins: ['http://localhost:8080'],
   debug: true
 })
 ```

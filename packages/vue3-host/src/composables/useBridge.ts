@@ -2,7 +2,17 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { HostBridge } from '@vue-hybrid-bridge/shared-bridge'
 import { useAuthStore } from '@/stores/auth'
 
-const bridge = new HostBridge({ debug: true })
+const defaultLegacyOrigin = import.meta.env.DEV ? 'http://localhost:8080' : window.location.origin
+const legacyOrigin = (import.meta.env.VITE_LEGACY_ORIGIN as string | undefined) || defaultLegacyOrigin
+const allowedOriginsEnv = (import.meta.env.VITE_BRIDGE_ALLOWED_ORIGINS as string | undefined)
+const allowedOrigins = allowedOriginsEnv
+  ? allowedOriginsEnv.split(',').map(origin => origin.trim()).filter(Boolean)
+  : [legacyOrigin]
+const bridge = new HostBridge({
+  debug: true,
+  targetOrigin: legacyOrigin,
+  allowedOrigins
+})
 
 export function useBridge() {
   const authStore = useAuthStore()
@@ -66,4 +76,3 @@ export function useBridge() {
     emit
   }
 }
-

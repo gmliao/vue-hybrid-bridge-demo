@@ -53,7 +53,12 @@ In `main.ts`:
 ```typescript
 import { GuestBridge } from '@vue-hybrid-bridge/shared-bridge'
 
-const bridge = new GuestBridge({ debug: true })
+const hostOrigin = 'https://host.example.com'
+const bridge = new GuestBridge({
+  debug: true,
+  targetOrigin: hostOrigin,
+  allowedOrigins: [hostOrigin]
+})
 Vue.prototype.$bridge = bridge
 
 async function initApp() {
@@ -131,7 +136,12 @@ declare module 'vue/types/vue' {
 import { HostBridge } from '@vue-hybrid-bridge/shared-bridge'
 import { useAuthStore } from '@/stores/auth'
 
-const bridge = new HostBridge({ debug: true })
+const legacyOrigin = 'https://legacy.example.com'
+const bridge = new HostBridge({
+  debug: true,
+  targetOrigin: legacyOrigin,
+  allowedOrigins: [legacyOrigin]
+})
 
 export function useBridge() {
   const authStore = useAuthStore()
@@ -502,4 +512,3 @@ Complete examples can be found in:
 ---
 
 **Language:** [English](./INTEGRATION_GUIDE.en.md) | [中文版](./INTEGRATION_GUIDE.zh.md)
-

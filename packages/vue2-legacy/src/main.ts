@@ -7,8 +7,21 @@ import { GuestBridge } from '@vue-hybrid-bridge/shared-bridge'
 
 Vue.config.productionTip = false
 
+const defaultHostOrigin = process.env.NODE_ENV !== 'production'
+  ? 'http://localhost:5173'
+  : window.location.origin
+const hostOrigin = process.env.VUE_APP_HOST_ORIGIN || defaultHostOrigin
+const allowedOriginsEnv = process.env.VUE_APP_BRIDGE_ALLOWED_ORIGINS
+const allowedOrigins = allowedOriginsEnv
+  ? allowedOriginsEnv.split(',').map(origin => origin.trim()).filter(Boolean)
+  : [hostOrigin]
+
 // 建立 Bridge 實例
-const bridge = new GuestBridge({ debug: true })
+const bridge = new GuestBridge({
+  debug: true,
+  targetOrigin: hostOrigin,
+  allowedOrigins
+})
 
 // 掛載到 Vue 原型，方便全域使用
 Vue.prototype.$bridge = bridge
@@ -134,4 +147,3 @@ async function initApp(): Promise<void> {
 
 // 啟動應用程式
 initApp()
-

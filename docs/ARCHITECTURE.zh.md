@@ -222,12 +222,14 @@ get isInIframe(): boolean {
 ```typescript
 // Vue3 Host
 const bridge = new HostBridge({
-  targetOrigin: 'https://legacy.example.com'
+  targetOrigin: 'https://legacy.example.com',
+  allowedOrigins: ['https://legacy.example.com']
 })
 
 // Vue2 Legacy
 const bridge = new GuestBridge({
-  targetOrigin: 'https://host.example.com'
+  targetOrigin: 'https://host.example.com',
+  allowedOrigins: ['https://host.example.com']
 })
 ```
 

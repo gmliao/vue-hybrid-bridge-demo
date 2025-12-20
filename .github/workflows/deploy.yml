@@ -39,11 +39,15 @@ jobs:
         run: npm run build -w packages/vue3-host
         env:
           GITHUB_ACTIONS: true
+          VITE_LEGACY_ORIGIN: https://gmliao.github.io
+          VITE_BRIDGE_ALLOWED_ORIGINS: https://gmliao.github.io
 
       - name: Build Vue2 Legacy
         run: npm run build -w packages/vue2-legacy
         env:
           VUE_APP_PUBLIC_PATH: /vue-hybrid-bridge-demo/legacy
+          VUE_APP_HOST_ORIGIN: https://gmliao.github.io
+          VUE_APP_BRIDGE_ALLOWED_ORIGINS: https://gmliao.github.io
 
       - name: Prepare deployment
         run: node scripts/prepare-gh-pages.js
@@ -66,4 +70,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-

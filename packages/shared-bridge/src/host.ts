@@ -16,6 +16,7 @@ export class HostBridge {
   constructor(options: BridgeOptions = {}) {
     this.options = {
       targetOrigin: options.targetOrigin ?? '*',
+      allowedOrigins: options.allowedOrigins ?? (options.targetOrigin && options.targetOrigin !== '*' ? [options.targetOrigin] : []),
       debug: options.debug ?? false
     }
     this.boundMessageHandler = this.handleMessage.bind(this)
@@ -98,8 +99,19 @@ export class HostBridge {
    * 處理收到的訊息
    */
   private handleMessage(event: MessageEvent): void {
+    if (!this.isAllowedOrigin(event.origin)) {
+      this.log('Blocked message from origin:', event.origin)
+      return
+    }
+
+    if (!this.isAllowedSource(event.source)) {
+      this.log('Blocked message from unexpected source')
+      return
+    }
+
     // 驗證訊息格式
     if (!isValidBridgeMessage(event.data)) {
+      this.log('Blocked invalid message:', event.data)
       return
     }
 
@@ -119,10 +131,25 @@ export class HostBridge {
     }
   }
 
+  private isAllowedOrigin(origin: string): boolean {
+    if (this.options.allowedOrigins.length === 0) {
+      return false
+    }
+
+    return this.options.allowedOrigins.includes(origin)
+  }
+
+  private isAllowedSource(source: MessageEvent['source']): boolean {
+    if (!this.iframe?.contentWindow) {
+      return false
+    }
+
+    return source === this.iframe.contentWindow
+  }
+
   private log(...args: unknown[]): void {
     if (this.options.debug) {
       console.log('[HostBridge]', ...args)
     }
   }
 }
-
