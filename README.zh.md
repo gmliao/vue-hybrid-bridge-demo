@@ -4,6 +4,12 @@
 以 Vue3 Host + iframe 方式整合 Vue2 Legacy，並透過 Message Bridge
 同步狀態與導航，保留 URL query 登入交換參數（`login_ticket`）。
 
+## Purpose
+
+本專案用小型、可隔離的原型，驗證從 Vue 2 遷移到 Vue 3 的可行路徑與關鍵架構假設。
+
+目的是降低不確定性，提供技術洞見，作為後續實作與整合的參考。
+
 ## 🌐 線上展示
 
 **[查看線上展示 →](https://gmliao.github.io/vue-hybrid-bridge-demo/)**

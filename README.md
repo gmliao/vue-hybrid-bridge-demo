@@ -2,6 +2,14 @@
 
 This project is a technical demonstration that integrates Vue2 Legacy into Vue3 Host using iframe + Message Bridge, while **maintaining the existing login flow unchanged**. The URL query login exchange parameter (`login_ticket`) is preserved.
 
+## Purpose
+
+This repository explores a potential migration approach from Vue 2 to Vue 3
+by validating key architectural assumptions through a small, isolated prototype.
+
+The intent is to reduce uncertainty and provide technical insights
+that may inform future implementation and integration work.
+
 ## 🌐 Live Demo
 
 **[View Live Demo →](https://gmliao.github.io/vue-hybrid-bridge-demo/)**
