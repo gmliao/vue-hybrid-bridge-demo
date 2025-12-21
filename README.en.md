@@ -12,7 +12,8 @@ that may inform future implementation and integration work.
 
 ## 🌐 Live Demo
 
-**[View Live Demo →](https://gmliao.github.io/vue-hybrid-bridge-demo/)**
+**[View Live Demo →](https://gmliao.github.io/vue-hybrid-bridge-demo/?login_ticket=demo-login-ticket-12345)**  
+Login ticket is included in the demo URL for convenience.
 
 ---
 

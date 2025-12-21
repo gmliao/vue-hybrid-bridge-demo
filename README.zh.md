@@ -12,7 +12,8 @@
 
 ## 🌐 線上展示
 
-**[查看線上展示 →](https://gmliao.github.io/vue-hybrid-bridge-demo/)**
+**[查看線上展示 →](https://gmliao.github.io/vue-hybrid-bridge-demo/?login_ticket=demo-login-ticket-12345)**  
+Demo 連結已預先帶入 login_ticket，方便直接查看登入狀態。
 
 ---
 

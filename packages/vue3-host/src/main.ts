@@ -19,6 +19,9 @@ function handleSSOTicket(): void {
     // Clear URL params (security best practice)
     const newUrl = new URL(window.location.href)
     newUrl.searchParams.delete('login_ticket')
+    if (!newUrl.searchParams.toString()) {
+      newUrl.search = ''
+    }
     window.history.replaceState({}, '', newUrl.toString())
   }
 }
