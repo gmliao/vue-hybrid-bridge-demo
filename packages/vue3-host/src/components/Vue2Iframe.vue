@@ -1,14 +1,21 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 interface Props {
   src: string
-  isReady: boolean
+  isReady?: boolean
 }
 
-defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  isReady: false
+})
 
 const iframeRef = ref<HTMLIFrameElement | null>(null)
+
+// 監聽 isReady 變化
+watch(() => props.isReady, (newValue) => {
+  console.log('[Vue3] Vue2Iframe isReady changed:', newValue)
+}, { immediate: true })
 
 defineExpose({
   iframeRef
@@ -24,7 +31,7 @@ defineExpose({
       title="Vue2 Legacy App"
     ></iframe>
     
-    <div class="iframe-overlay" v-if="!isReady">
+    <div class="iframe-overlay" v-if="!props.isReady">
       <div class="loading-spinner"></div>
       <p>{{ $t('common.loading') }}</p>
     </div>

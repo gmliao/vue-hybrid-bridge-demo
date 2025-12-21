@@ -35,7 +35,7 @@ flowchart TB
     LegacyContainer --> ContentArea
     ContentArea --> Vue2Iframe
     ContentArea --> SpaceInvaders
-    Vue3Host -->|"iframe src=?token=XXX"| Vue2Legacy
+    Vue3Host -->|"iframe src=?login_ticket=XXX"| Vue2Legacy
     Vue2Legacy -->|"READY / AUTH_READY"| Vue3Host
     Vue3Host -->|"NAVIGATE"| Vue2Legacy
     Vue2Legacy -->|"ROUTE_CHANGE"| Vue3Host
@@ -91,11 +91,11 @@ sequenceDiagram
     participant iframe as iframe
     participant Vue2 as Vue2 Legacy
 
-    Vue3->>Vue3: getToken()
-    Vue3->>iframe: src="?token=XXX"
+    Vue3->>Vue3: getLoginTicket()
+    Vue3->>iframe: src="?login_ticket=XXX"
     iframe->>Vue2: 載入頁面
-    Vue2->>Vue2: parseQueryToken()
-    Vue2->>Vue2: loginWithToken(token)
+    Vue2->>Vue2: parseLoginTicket()
+    Vue2->>Vue2: exchangeLoginTicket(loginTicket)
     Vue2->>Vue2: Vuex commit
     Vue2->>Vue3: postMessage(READY)
     Vue2->>Vue3: postMessage(AUTH_READY)
@@ -236,7 +236,7 @@ const bridge = new GuestBridge({
 ### Token 傳遞
 
 - Token 透過 URL query 傳遞（符合既有流程）
-- Vue2 負責驗證 token 有效性
+- Vue2 負責交換 login_ticket 並判定登入狀態
 - Bridge 不傳遞敏感憑證
 
 ---

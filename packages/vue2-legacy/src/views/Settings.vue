@@ -40,8 +40,8 @@
             <span class="info-value">{{ user?.email }}</span>
           </div>
           <div class="info-row">
-            <span class="info-label">{{ $t('settings.token') }}</span>
-            <span class="info-value token">{{ user?.token }}</span>
+            <span class="info-label">{{ $t('settings.apiToken') }}</span>
+            <span class="info-value token">{{ user?.apiToken }}</span>
           </div>
         </div>
         <div v-else class="no-auth">

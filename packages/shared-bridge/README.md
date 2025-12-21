@@ -283,6 +283,11 @@ bridge.on('STATE_SYNC', (msg) => {
 })
 ```
 
+#### Demo 測試方式（STATE_SYNC）
+
+- Vue2 Legacy → Settings → 點擊「Sync Test State」
+- Vue3 Host 會在 console 顯示 `STATE_SYNC` 的 key/value
+
 ### EVENT
 
 通用自訂事件，用於擴展通訊。

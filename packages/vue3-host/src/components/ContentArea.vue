@@ -20,7 +20,14 @@ const iframeRef = ref<InstanceType<typeof Vue2Iframe> | null>(null)
 const spaceInvadersRef = ref<InstanceType<typeof SpaceInvaders> | null>(null)
 const hasIframeLoaded = ref(false)
 
-// 動態產生 iframe URL，包含 login_ticket（只在首次載入時計算）
+// Ensure isLegacyReady is always boolean
+const isLegacyReady = computed(() => {
+  const ready = Boolean(authStore.isLegacyReady)
+  console.log('[Vue3] ContentArea isLegacyReady computed:', ready, 'raw value:', authStore.isLegacyReady)
+  return ready
+})
+
+// Build iframe URL with login_ticket (computed once per load)
 const legacyUrl = computed(() => {
   const isDev = import.meta.env.DEV
   const baseUrl = isDev 
@@ -32,13 +39,17 @@ const legacyUrl = computed(() => {
 })
 
 function onIframeLoad() {
+  console.log('[Vue3] Iframe loaded, iframeRef:', iframeRef.value?.iframeRef, 'hasIframeLoaded:', hasIframeLoaded.value)
   if (iframeRef.value?.iframeRef && !hasIframeLoaded.value) {
+    console.log('[Vue3] Calling connect...')
     connect(iframeRef.value.iframeRef)
     hasIframeLoaded.value = true
+  } else {
+    console.warn('[Vue3] Cannot connect: iframeRef missing or already connected')
   }
 }
 
-// 監聽視圖切換，暫停/恢復 3D 渲染
+// Watch view switch to pause/resume 3D rendering
 watch(() => props.view, (newView) => {
   if (spaceInvadersRef.value && 'pause' in spaceInvadersRef.value && 'resume' in spaceInvadersRef.value) {
     if (newView === 'earth3d') {
@@ -57,7 +68,7 @@ watch(() => props.view, (newView) => {
       v-show="view === 'legacy'"
       ref="iframeRef"
       :src="legacyUrl"
-      :is-ready="authStore.isLegacyReady"
+      :is-ready="isLegacyReady"
       @load="onIframeLoad"
     />
     
@@ -85,7 +96,7 @@ watch(() => props.view, (newView) => {
   height: 100%;
 }
 
-/* 隱藏時禁用交互 */
+/* Disable interactions when hidden */
 .content-wrapper > *[style*="display: none"] {
   pointer-events: none;
   visibility: hidden;

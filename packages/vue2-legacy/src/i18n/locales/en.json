@@ -15,9 +15,9 @@
     "notLoggedIn": "Not Logged In",
     "user": "User",
     "email": "Email",
-    "noToken": "No token in URL",
+    "noToken": "No login ticket in URL",
     "techDesc": "Technical Description",
-    "tech1": "Login authentication via URL Query Token",
+    "tech1": "Login exchange via URL query login_ticket",
     "tech2": "Communicate with Vue3 Host using postMessage",
     "tech3": "Vuex + TypeScript manage application state",
     "tech4": "vue-class-component class style components",
@@ -53,7 +53,7 @@
     "accountInfo": "Account Information",
     "username": "Username",
     "email": "Email",
-    "token": "Token",
+    "apiToken": "API Token",
     "noAuth": "Please log in to view account information",
     "bridgeTest": "Bridge Test",
     "bridgeTestDesc": "Test communication with Vue3 Host",
@@ -63,4 +63,3 @@
     "testStateSynced": "Test state synced to Vue3 Host!"
   }
 }
-

@@ -2,7 +2,7 @@
 
 本專案為技術展示用，目標是在**既有登入流程不可變更**的前提下，
 以 Vue3 Host + iframe 方式整合 Vue2 Legacy，並透過 Message Bridge
-同步狀態與導航，保留 URL query 登入交換參數（demo 使用 `token`）。
+同步狀態與導航，保留 URL query 登入交換參數（`login_ticket`）。
 
 ## 🌐 線上展示
 
@@ -21,7 +21,7 @@
 - 右上角顯示語言切換按鈕（中文/EN）和 Legacy 連接狀態
 - 下方紫色區域為 **Vue2 Legacy** iframe 內容
 - Vue2 在 iframe 模式下自動隱藏原生導航列
-- 登入交換參數透過 URL query 傳遞（demo 使用 `token`），由 Vue2 驗證後回報給 Vue3
+- 登入交換參數透過 URL query 傳遞（`login_ticket`），由 Vue2 驗證後回報給 Vue3
 - **中英文切換**：預設英文，點擊右上角語言按鈕（顯示「中文」）可切換至中文，Vue3 與 Vue2 語言同步
 - **響應式設計**：完整支援桌面、平板、手機等各種螢幕尺寸
 - **虛擬控制**：手機/平板設備提供觸控友善的遊戲控制按鈕
@@ -131,14 +131,14 @@ vue-hybrid-bridge-demo/
 
 ### 不可變更
 
-- ✅ Vue2 登入流程維持：**URL query 登入交換參數**（demo 使用 `token`）
+- ✅ Vue2 登入流程維持：**URL query 登入交換參數**（`login_ticket`）
 - ✅ Vue2 仍負責「是否已登入」的最終判定
-- ❌ 不可移除初始進入時的 URL query 參數（demo 使用 `token`）
+- ❌ 不可移除初始進入時的 URL query `login_ticket`
 - ❌ 不可要求 Vue2 改為純 message 登入
 
 ### 可新增
 
-- ✅ Vue3 可產生登入交換參數並帶入 iframe URL
+- ✅ Vue3 可產生 login_ticket 並帶入 iframe URL
 - ✅ Vue3 / Vue2 可透過 bridge 同步登入狀態
 - ✅ Vue2 可在登入完成後回報 AUTH_READY
 
@@ -181,10 +181,10 @@ vue-hybrid-bridge-demo/
 
 ## 驗證流程（SSO 風格）
 
-此 demo 以常見的 SSO 回跳交換流程為藍本，同時維持 legacy 的登入邏輯。URL 參數被視為**登入交換參數**（此處以 `login_ticket` 作為概念名稱；demo 實際使用 `token`）。
+此 demo 以常見的 SSO 回跳交換流程為藍本，同時維持 legacy 的登入邏輯。URL 參數被視為**登入交換參數**（`login_ticket`）。
 
 1. 使用者完成 SSO，瀏覽器回跳並帶上 `login_ticket`
-2. 前端讀取 `login_ticket`（demo 讀取 `token`）
+2. 前端讀取 `login_ticket`
 3. 前端送至後端驗證（demo 由 Vue2 模擬登入）
 4. 後端建立登入態（session 或 API token）
 5. Vue3 / Vue2 透過 bridge 共享登入狀態（不傳遞原始票據）
@@ -211,6 +211,20 @@ sequenceDiagram
 - postMessage bridge 會驗證 origin allowlist 與訊息格式
 - `login_ticket` 不可視為長效授權憑證
 - 生產建議：讀取後使用 `history.replaceState` 清除 URL 參數，並設置 Referrer-Policy 為 `strict-origin-when-cross-origin`
+
+---
+
+## 退場策略（Decommission Plan）
+
+此 demo 為過渡架構，建議以路由為單位逐步替換，並維持最小 bridge 集合。
+
+- **替換單位：** 以頁面（route）為單位逐步替換
+- **Bridge 最小集：** `AUTH_READY`, `NAVIGATE`, `EVENT: LOGOUT`（只保留必要事件）
+- **拆除里程碑：**
+  - Phase 1：Vue3 上線新功能（如 3D 模組）
+  - Phase 2：高變動頁面逐步搬到 Vue3
+  - Phase 3：Vue2 僅剩低頻頁面
+  - Phase 4：移除 iframe 與 bridge
 
 ---
 

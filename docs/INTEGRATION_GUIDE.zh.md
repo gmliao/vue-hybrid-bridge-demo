@@ -73,10 +73,10 @@ async function initApp() {
     router.push(message.route)
   })
   
-  // 解析 token 並登入
-  const token = parseQueryToken()
-  if (token) {
-    const user = await loginWithToken(token)
+  // 解析 login_ticket 並登入
+  const loginTicket = parseLoginTicket()
+  if (loginTicket) {
+    const user = await exchangeLoginTicket(loginTicket)
     store.commit('auth/setUser', user)
     bridge.authReady(user)
   }
@@ -256,7 +256,7 @@ const props = defineProps<{
 const { connect } = useBridge()
 const iframeRef = ref()
 const legacyUrl = computed(() => {
-  return `${LEGACY_BASE_URL}/?token=${getToken()}`
+  return `${LEGACY_BASE_URL}/?login_ticket=${getLoginTicket()}`
 })
 
 function onIframeLoad() {
@@ -440,14 +440,14 @@ bridge.on('EVENT', (message) => {
 
 ### 功能驗證
 
-- [ ] Vue3 iframe URL 正確帶入 token
-- [ ] Vue2 能解析 URL token 並登入
+- [ ] Vue3 iframe URL 正確帶入 login_ticket
+- [ ] Vue2 能解析 URL login_ticket 並登入
 - [ ] Vue2 登入後 Vue3 收到 AUTH_READY
 - [ ] Vue3 導航按鈕能控制 Vue2 路由
 - [ ] Vue2 路由變化 Vue3 能收到通知
 - [ ] Vue2 在 iframe 中隱藏導航列
 - [ ] Vue2 獨立存取時顯示導航列
-- [ ] 未帶 token 時 Vue2 顯示未登入狀態
+- [ ] 未帶 login_ticket 時 Vue2 顯示未登入狀態
 - [ ] Vue3 原生功能可透過導航存取
 - [ ] Legacy 和 Vue3 功能間的視圖切換正常運作
 - [ ] 響應式設計在手機/平板上正常運作
@@ -456,7 +456,7 @@ bridge.on('EVENT', (message) => {
 ### 約束驗證
 
 - [ ] Vue2 登入流程未被修改
-- [ ] URL token 機制保留
+- [ ] URL login_ticket 機制保留
 - [ ] Vue2 仍為登入狀態的單一真實來源
 
 ---

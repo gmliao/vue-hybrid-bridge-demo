@@ -1,11 +1,11 @@
 import { BridgeMessage, BridgeMessageType, BridgeOptions, MessageHandler, isValidBridgeMessage } from './protocol'
 
 /**
- * Host Bridge - 用於 Vue3 Host 端
- * 
- * 負責：
- * - 監聽來自 iframe (Vue2) 的訊息
- * - 向 iframe 發送訊息（如 NAVIGATE）
+ * Host Bridge - for Vue3 Host
+ *
+ * Responsibilities:
+ * - listen to messages from iframe (Vue2)
+ * - send messages to iframe (e.g. NAVIGATE)
  */
 export class HostBridge {
   private iframe: HTMLIFrameElement | null = null
@@ -23,7 +23,7 @@ export class HostBridge {
   }
 
   /**
-   * 連接到 iframe
+   * Connect to iframe
    */
   connect(iframe: HTMLIFrameElement): void {
     this.iframe = iframe
@@ -32,7 +32,7 @@ export class HostBridge {
   }
 
   /**
-   * 斷開連接
+   * Disconnect
    */
   disconnect(): void {
     window.removeEventListener('message', this.boundMessageHandler)
@@ -42,7 +42,7 @@ export class HostBridge {
   }
 
   /**
-   * 發送訊息到 iframe
+   * Send message to iframe
    */
   send(message: BridgeMessage): void {
     if (!this.iframe?.contentWindow) {
@@ -55,28 +55,28 @@ export class HostBridge {
   }
 
   /**
-   * 導航到指定路由
+   * Navigate to route
    */
   navigate(route: string): void {
     this.send({ type: 'NAVIGATE', route })
   }
 
   /**
-   * 同步狀態
+   * Sync state
    */
   syncState(key: string, value: unknown): void {
     this.send({ type: 'STATE_SYNC', key, value })
   }
 
   /**
-   * 發送事件
+   * Emit event
    */
   emit(name: string, payload?: unknown): void {
     this.send({ type: 'EVENT', name, payload })
   }
 
   /**
-   * 監聽特定類型的訊息
+   * Listen to specific message type
    */
   on<T extends BridgeMessageType>(
     type: T,
@@ -89,14 +89,14 @@ export class HostBridge {
     const handlers = this.handlers.get(type)!
     handlers.add(handler as MessageHandler)
     
-    // 返回取消監聽的函式
+    // Return unsubscribe function
     return () => {
       handlers.delete(handler as MessageHandler)
     }
   }
 
   /**
-   * 處理收到的訊息
+   * Handle incoming message
    */
   private handleMessage(event: MessageEvent): void {
     if (!this.isAllowedOrigin(event.origin)) {
@@ -109,7 +109,7 @@ export class HostBridge {
       return
     }
 
-    // 驗證訊息格式
+    // Validate message shape
     if (!isValidBridgeMessage(event.data)) {
       this.log('Blocked invalid message:', event.data)
       return
@@ -118,7 +118,7 @@ export class HostBridge {
     const message = event.data
     this.log('Received message:', message)
 
-    // 觸發對應的處理器
+    // Trigger handlers
     const handlers = this.handlers.get(message.type)
     if (handlers) {
       handlers.forEach(handler => {

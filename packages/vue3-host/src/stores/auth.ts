@@ -30,12 +30,28 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   /**
-   * 模擬取得登入交換憑證（login_ticket）
-   * 實際應用中應從既有系統取得
+   * Get login exchange credential (login_ticket)
+   * Priority:
+   * 1. sessionStorage login_ticket (stored by main.ts from URL)
+   * 2. dev mode: fixed mock login_ticket
+   * 3. prod mode: empty string (use other source)
+   *
+   * Note: URL params are handled and cleared in main.ts
    */
   function getLoginTicket(): string {
-    // Demo 用途：使用固定的模擬 login_ticket
-    return 'demo-login-ticket-12345'
+    // 1. Read from sessionStorage (stored by main.ts)
+    const storedTicket = sessionStorage.getItem('login_ticket')
+    if (storedTicket) {
+      return storedTicket
+    }
+    
+    // 2. Dev mode: mock ticket
+    if (import.meta.env.DEV) {
+      return 'demo-login-ticket-12345'
+    }
+    
+    // 3. Prod mode: empty string (use API/env/etc.)
+    return ''
   }
 
   return {

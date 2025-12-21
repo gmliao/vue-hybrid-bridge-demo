@@ -2,7 +2,7 @@
 
 ## Core Principle
 
-> **Vue2 login flow must maintain URL query token, cannot be changed.**
+> **Vue2 login flow must maintain URL query login_ticket, cannot be changed.**
 
 This is the most important constraint of this project. Any modifications must follow this principle.
 
@@ -20,22 +20,22 @@ sequenceDiagram
     participant Bridge as Message Bridge
 
     User->>Vue3: Access application
-    Vue3->>Vue3: getToken()
-    Note over Vue3: Get token from existing system<br/>(or use mock token)
+    Vue3->>Vue3: getLoginTicket()
+    Note over Vue3: Get login_ticket from existing system<br/>(or use mock ticket)
     
-    Vue3->>iframe: Set src="?token=XXX"
+    Vue3->>iframe: Set src="?login_ticket=XXX"
     iframe->>Vue2: Load page
     
-    Vue2->>Vue2: parseQueryToken()
-    Note over Vue2: Parse token from URL query
+    Vue2->>Vue2: parseLoginTicket()
+    Note over Vue2: Parse login_ticket from URL query
     
-    alt token exists
-        Vue2->>Vue2: loginWithToken(token)
-        Note over Vue2: Call API to validate token<br/>(simulated in Demo)
+    alt login_ticket exists
+        Vue2->>Vue2: exchangeLoginTicket(loginTicket)
+        Note over Vue2: Call API to exchange login_ticket<br/>(simulated in Demo)
         Vue2->>Vuex: commit('setUser', user)
         Vue2->>Vuex: commit('setAuthenticated', true)
         Vue2->>Bridge: authReady(user)
-    else token doesn't exist
+    else login_ticket doesn't exist
         Vue2->>Vue2: Maintain unauthenticated state
     end
     
@@ -54,25 +54,25 @@ sequenceDiagram
 
 ## Code Reference
 
-### Step 1: Vue3 Get Token
+### Step 1: Vue3 Get Login Ticket
 
 ```typescript
 // packages/vue3-host/src/stores/auth.ts
-function getToken(): string {
-  // Demo purpose: use fixed mock token
+function getLoginTicket(): string {
+  // Demo purpose: use fixed mock login_ticket
   // In real application, get from existing system
-  return 'demo-token-12345'
+  return 'demo-login-ticket-12345'
 }
 ```
 
-### Step 2: Vue3 Load iframe (URL with token)
+### Step 2: Vue3 Load iframe (URL with login_ticket)
 
 ```typescript
 // packages/vue3-host/src/components/LegacyFrame.vue
 const legacyUrl = computed(() => {
   const baseUrl = 'http://localhost:8080'
-  const token = authStore.getToken()
-  return `${baseUrl}/?token=${token}`
+  const loginTicket = authStore.getLoginTicket()
+  return `${baseUrl}/?login_ticket=${loginTicket}`
 })
 ```
 
@@ -82,13 +82,13 @@ const legacyUrl = computed(() => {
 </template>
 ```
 
-### Step 3: Vue2 Parse URL Token
+### Step 3: Vue2 Parse URL Login Ticket
 
 ```typescript
 // packages/vue2-legacy/src/main.ts
-function parseQueryToken(): string | null {
+function parseLoginTicket(): string | null {
   const urlParams = new URLSearchParams(window.location.search)
-  return urlParams.get('token')
+  return urlParams.get('login_ticket')
 }
 ```
 
@@ -96,10 +96,10 @@ function parseQueryToken(): string | null {
 
 ```typescript
 // packages/vue2-legacy/src/main.ts
-const token = parseQueryToken()
+const loginTicket = parseLoginTicket()
 
-if (token) {
-  const user = await loginWithToken(token)
+if (loginTicket) {
+  const user = await exchangeLoginTicket(loginTicket)
   
   // Write to Vuex
   store.commit('auth/setUser', user)
@@ -132,8 +132,8 @@ bridge.on('AUTH_READY', (message) => {
 
 | Item | Owner | Description |
 |------|-------|-------------|
-| Token Source | Vue3 or existing system | Generate and pass token |
-| Token Validation | Vue2 | Get from URL and validate |
+| Login Ticket Source | Vue3 or existing system | Generate and pass login_ticket |
+| Login Ticket Exchange | Vue2 | Get from URL and exchange |
 | Login Status Determination | Vue2 | Single source of truth (SSOT) |
 | User Information | Vue2 → Vue3 | Sync via AUTH_READY |
 | UI Navigation Status | Vue3 | Display purpose |
@@ -143,14 +143,14 @@ bridge.on('AUTH_READY', (message) => {
 
 ## Error Handling
 
-### Token Doesn't Exist
+### Login Ticket Doesn't Exist
 
 ```typescript
 // packages/vue2-legacy/src/main.ts
-const token = parseQueryToken()
+const loginTicket = parseLoginTicket()
 
-if (!token) {
-  console.log('[Vue2] No token provided, staying as guest')
+if (!loginTicket) {
+  console.log('[Vue2] No login_ticket provided, staying as guest')
   // Maintain unauthenticated state, don't send AUTH_READY
   bridge.ready() // Still notify Vue3 that ready
 }
@@ -160,7 +160,7 @@ if (!token) {
 
 ```typescript
 try {
-  const user = await loginWithToken(token)
+  const user = await exchangeLoginTicket(loginTicket)
   store.commit('auth/setUser', user)
   bridge.authReady(user)
 } catch (error) {
@@ -179,7 +179,7 @@ interface User {
   id: number
   name: string
   email: string
-  token?: string
+  apiToken?: string
   [key: string]: unknown  // Can extend other fields
 }
 ```
@@ -190,11 +190,11 @@ interface User {
 
 | Criteria | Status |
 |----------|--------|
-| Vue3 iframe URL correctly includes token | ✅ |
+| Vue3 iframe URL correctly includes login_ticket | ✅ |
 | Vue2 successfully logs in following original flow | ✅ |
 | Vue3 receives notification after Vue2 login completes | ✅ |
 | Vue3 navigation bar displays user information | ✅ |
-| No token → Vue2 shows unauthenticated state | ✅ |
+| No login_ticket → Vue2 shows unauthenticated state | ✅ |
 | Vue2 original login core logic not modified | ✅ |
 
 ---
@@ -203,7 +203,7 @@ interface User {
 
 Before modifying any login-related code, confirm:
 
-- [ ] Is URL token login flow maintained?
+- [ ] Is URL login_ticket flow maintained?
 - [ ] Is Vue2 still responsible for login status determination?
 - [ ] Is bridge only used for state reporting?
 - [ ] Is Vue2 original login logic unmodified?
@@ -212,4 +212,3 @@ Before modifying any login-related code, confirm:
 ---
 
 **Language:** [English](./LOGIN_FLOW.en.md) | [中文版](./LOGIN_FLOW.zh.md)
-

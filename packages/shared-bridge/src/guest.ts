@@ -1,11 +1,11 @@
 import { BridgeMessage, BridgeMessageType, BridgeOptions, MessageHandler, User, isValidBridgeMessage } from './protocol'
 
 /**
- * Guest Bridge - 用於 Vue2 Legacy 端（iframe 內）
- * 
- * 負責：
- * - 向父視窗 (Vue3) 發送訊息
- * - 監聽來自父視窗的訊息（如 NAVIGATE）
+ * Guest Bridge - for Vue2 Legacy (inside iframe)
+ *
+ * Responsibilities:
+ * - send messages to parent (Vue3)
+ * - listen to messages from parent (e.g. NAVIGATE)
  */
 export class GuestBridge {
   private handlers: Map<BridgeMessageType, Set<MessageHandler>> = new Map()
@@ -22,7 +22,7 @@ export class GuestBridge {
   }
 
   /**
-   * 初始化連接
+   * Initialize connection
    */
   connect(): void {
     window.addEventListener('message', this.boundMessageHandler)
@@ -30,7 +30,7 @@ export class GuestBridge {
   }
 
   /**
-   * 斷開連接
+   * Disconnect
    */
   disconnect(): void {
     window.removeEventListener('message', this.boundMessageHandler)
@@ -39,7 +39,7 @@ export class GuestBridge {
   }
 
   /**
-   * 發送訊息到父視窗
+   * Send message to parent
    */
   send(message: BridgeMessage): void {
     if (!window.parent || window.parent === window) {
@@ -52,35 +52,35 @@ export class GuestBridge {
   }
 
   /**
-   * 通知父視窗 Legacy App 已準備就緒
+   * Notify parent that legacy app is ready
    */
   ready(): void {
     this.send({ type: 'READY' })
   }
 
   /**
-   * 通知父視窗登入已完成
+   * Notify parent that auth is ready
    */
   authReady(user: User): void {
     this.send({ type: 'AUTH_READY', user })
   }
 
   /**
-   * 同步狀態到父視窗
+   * Sync state to parent
    */
   syncState(key: string, value: unknown): void {
     this.send({ type: 'STATE_SYNC', key, value })
   }
 
   /**
-   * 發送事件到父視窗
+   * Emit event to parent
    */
   emit(name: string, payload?: unknown): void {
     this.send({ type: 'EVENT', name, payload })
   }
 
   /**
-   * 監聽特定類型的訊息
+   * Listen to specific message type
    */
   on<T extends BridgeMessageType>(
     type: T,
@@ -93,14 +93,14 @@ export class GuestBridge {
     const handlers = this.handlers.get(type)!
     handlers.add(handler as MessageHandler)
     
-    // 返回取消監聯的函式
+    // Return unsubscribe function
     return () => {
       handlers.delete(handler as MessageHandler)
     }
   }
 
   /**
-   * 處理收到的訊息
+   * Handle incoming message
    */
   private handleMessage(event: MessageEvent): void {
     if (!this.isAllowedOrigin(event.origin)) {
@@ -113,7 +113,7 @@ export class GuestBridge {
       return
     }
 
-    // 驗證訊息格式
+    // Validate message shape
     if (!isValidBridgeMessage(event.data)) {
       this.log('Blocked invalid message:', event.data)
       return
@@ -122,7 +122,7 @@ export class GuestBridge {
     const message = event.data
     this.log('Received message:', message)
 
-    // 觸發對應的處理器
+    // Trigger handlers
     const handlers = this.handlers.get(message.type)
     if (handlers) {
       handlers.forEach(handler => {

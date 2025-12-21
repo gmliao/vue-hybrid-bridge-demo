@@ -7,7 +7,7 @@ export interface User {
   id: number
   name: string
   email: string
-  token?: string
+  apiToken?: string
 }
 
 export interface AuthState {
@@ -52,4 +52,3 @@ export default new Vuex.Store<RootState>({
     }
   }
 })
-

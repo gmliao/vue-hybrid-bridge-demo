@@ -15,9 +15,9 @@
     "notLoggedIn": "未登入",
     "user": "使用者",
     "email": "Email",
-    "noToken": "URL 中未包含 token",
+    "noToken": "URL 中未包含 login_ticket",
     "techDesc": "技術說明",
-    "tech1": "透過 URL Query Token 進行登入驗證",
+    "tech1": "透過 URL query login_ticket 進行登入交換",
     "tech2": "使用 postMessage 與 Vue3 Host 通訊",
     "tech3": "Vuex + TypeScript 管理應用程式狀態",
     "tech4": "vue-class-component 類別風格組件",
@@ -53,7 +53,7 @@
     "accountInfo": "帳戶資訊",
     "username": "使用者名稱",
     "email": "電子郵件",
-    "token": "Token",
+    "apiToken": "API Token",
     "noAuth": "請先登入以查看帳戶資訊",
     "bridgeTest": "Bridge 測試",
     "bridgeTestDesc": "測試與 Vue3 Host 的通訊",
@@ -63,4 +63,3 @@
     "testStateSynced": "已同步設定狀態到 Vue3 Host！"
   }
 }
-

@@ -1,5 +1,5 @@
 /**
- * 使用者資訊型別
+ * User info type
  */
 export interface User {
   id: string | number
@@ -9,13 +9,13 @@ export interface User {
 }
 
 /**
- * Bridge 訊息類型定義
- * 
- * - READY: Vue2 Legacy App 啟動完成
- * - AUTH_READY: Vue2 已完成登入，包含使用者資訊
- * - NAVIGATE: Vue3 → Vue2 路由導向
- * - STATE_SYNC: 狀態同步
- * - EVENT: 通用事件
+ * Bridge message types
+ *
+ * - READY: Vue2 legacy app booted
+ * - AUTH_READY: Vue2 login completed with user payload
+ * - NAVIGATE: Vue3 -> Vue2 route navigation
+ * - STATE_SYNC: state sync payload
+ * - EVENT: generic event payload
  */
 export type BridgeMessage =
   | { type: 'READY' }
@@ -25,29 +25,29 @@ export type BridgeMessage =
   | { type: 'EVENT'; name: string; payload?: unknown }
 
 /**
- * 訊息類型字串
+ * Message type union
  */
 export type BridgeMessageType = BridgeMessage['type']
 
 /**
- * 訊息處理器型別
+ * Message handler type
  */
 export type MessageHandler<T extends BridgeMessage = BridgeMessage> = (message: T) => void
 
 /**
- * Bridge 設定選項
+ * Bridge options
  */
 export interface BridgeOptions {
-  /** 目標 origin，預設為 '*' */
+  /** target origin, defaults to '*' */
   targetOrigin?: string
-  /** 允許接收的來源 origin 清單（未設定時會嘗試使用 targetOrigin，若仍為空則拒收） */
+  /** allowed origin list (falls back to targetOrigin when provided; empty means reject) */
   allowedOrigins?: string[]
-  /** 是否啟用除錯模式 */
+  /** enable debug logging */
   debug?: boolean
 }
 
 /**
- * 驗證訊息格式是否正確
+ * Validate message shape
  */
 export function isValidBridgeMessage(data: unknown): data is BridgeMessage {
   if (typeof data !== 'object' || data === null) {

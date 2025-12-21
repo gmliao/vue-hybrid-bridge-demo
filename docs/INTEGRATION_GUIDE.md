@@ -73,10 +73,10 @@ async function initApp() {
     router.push(message.route)
   })
   
-  // Parse token and login
-  const token = parseQueryToken()
-  if (token) {
-    const user = await loginWithToken(token)
+  // Parse login_ticket and login
+  const loginTicket = parseLoginTicket()
+  if (loginTicket) {
+    const user = await exchangeLoginTicket(loginTicket)
     store.commit('auth/setUser', user)
     bridge.authReady(user)
   }
@@ -256,7 +256,7 @@ const props = defineProps<{
 const { connect } = useBridge()
 const iframeRef = ref()
 const legacyUrl = computed(() => {
-  return `${LEGACY_BASE_URL}/?token=${getToken()}`
+  return `${LEGACY_BASE_URL}/?login_ticket=${getLoginTicket()}`
 })
 
 function onIframeLoad() {
@@ -440,14 +440,14 @@ bridge.on('EVENT', (message) => {
 
 ### Feature Validation
 
-- [ ] Vue3 iframe URL correctly includes token
-- [ ] Vue2 can parse URL token and login
+- [ ] Vue3 iframe URL correctly includes login_ticket
+- [ ] Vue2 can parse URL login_ticket and login
 - [ ] Vue3 receives AUTH_READY after Vue2 login
 - [ ] Vue3 navigation buttons can control Vue2 routes
 - [ ] Vue3 can receive notification when Vue2 route changes
 - [ ] Vue2 hides navigation bar in iframe
 - [ ] Vue2 shows navigation bar when accessed standalone
-- [ ] Vue2 shows unauthenticated state when no token
+- [ ] Vue2 shows unauthenticated state when no login_ticket
 - [ ] Vue3 native features can be accessed via navigation
 - [ ] View switching between Legacy and Vue3 features works correctly
 - [ ] Responsive design works on mobile/tablet
@@ -456,7 +456,7 @@ bridge.on('EVENT', (message) => {
 ### Constraint Validation
 
 - [ ] Vue2 login flow not modified
-- [ ] URL token mechanism preserved
+- [ ] URL login_ticket mechanism preserved
 - [ ] Vue2 still single source of truth for login status
 
 ---
