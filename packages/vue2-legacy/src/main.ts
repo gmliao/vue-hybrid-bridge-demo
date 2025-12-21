@@ -13,7 +13,7 @@ const defaultHostOrigin = process.env.NODE_ENV !== 'production'
 const hostOrigin = process.env.VUE_APP_HOST_ORIGIN || defaultHostOrigin
 const allowedOriginsEnv = process.env.VUE_APP_BRIDGE_ALLOWED_ORIGINS
 const allowedOrigins = allowedOriginsEnv
-  ? allowedOriginsEnv.split(',').map(origin => origin.trim()).filter(Boolean)
+  ? allowedOriginsEnv.split(',').map((origin: string) => origin.trim()).filter(Boolean)
   : [hostOrigin]
 
 // 建立 Bridge 實例

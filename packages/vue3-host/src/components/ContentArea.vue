@@ -20,15 +20,15 @@ const iframeRef = ref<InstanceType<typeof Vue2Iframe> | null>(null)
 const spaceInvadersRef = ref<InstanceType<typeof SpaceInvaders> | null>(null)
 const hasIframeLoaded = ref(false)
 
-// 動態產生 iframe URL，包含 token（只在首次載入時計算）
+// 動態產生 iframe URL，包含 login_ticket（只在首次載入時計算）
 const legacyUrl = computed(() => {
   const isDev = import.meta.env.DEV
   const baseUrl = isDev 
     ? 'http://localhost:8080'
     : (import.meta.env.BASE_URL + 'legacy')
-  const token = authStore.getToken()
+  const loginTicket = authStore.getLoginTicket()
   const lang = locale.value
-  return `${baseUrl}/?token=${token}&lang=${lang}`
+  return `${baseUrl}/?login_ticket=${loginTicket}&lang=${lang}`
 })
 
 function onIframeLoad() {
@@ -91,4 +91,3 @@ watch(() => props.view, (newView) => {
   visibility: hidden;
 }
 </style>
-

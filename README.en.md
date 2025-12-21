@@ -1,6 +1,6 @@
 # Vue Hybrid Bridge Demo <span style="float: right;">[English](./README.en.md) | [中文版](./README.zh.md)</span>
 
-This project is a technical demonstration that integrates Vue2 Legacy into Vue3 Host using iframe + Message Bridge, while **maintaining the existing login flow unchanged**. The URL token authentication mechanism is preserved.
+This project is a technical demonstration that integrates Vue2 Legacy into Vue3 Host using iframe + Message Bridge, while **maintaining the existing login flow unchanged**. The URL query login exchange parameter (demo uses `token`) is preserved.
 
 ## 🌐 Live Demo
 
@@ -18,7 +18,7 @@ This project is a technical demonstration that integrates Vue2 Legacy into Vue3 
 - Top right shows language toggle button (中文/EN) and Legacy connection status
 - Bottom purple area is **Vue2 Legacy** iframe content
 - Vue2 automatically hides native navigation bar in iframe mode
-- Login status is passed via URL token, verified by Vue2 and reported to Vue3
+- Login exchange parameter is passed via URL query (demo uses `token`), verified by Vue2 and reported to Vue3
 - **Language Toggle**: Default English, click top right language button (shows "中文") to switch to Chinese, Vue3 and Vue2 languages sync
 
 ## Quick Start
@@ -106,7 +106,7 @@ vue-hybrid-bridge-demo/
 
 | Feature | Description |
 |---------|-------------|
-| URL Token Login | Vue2 parses token from URL query, maintains original flow |
+| SSO Redirect Parameter | Vue2 parses login exchange parameter from URL query, maintains original flow |
 | Bridge Communication | postMessage bidirectional communication |
 | State Sync | Vue2 notifies Vue3 via AUTH_READY after login |
 | Route Navigation | Vue3 can control Vue2 routes |
@@ -122,9 +122,9 @@ vue-hybrid-bridge-demo/
 
 ### Cannot Change
 
-- ✅ Vue2 login flow maintains: **URL query token**
+- ✅ Vue2 login flow maintains: **URL query login exchange parameter** (demo uses `token`)
 - ✅ Vue2 still responsible for final "is logged in" determination
-- ❌ Cannot remove URL token
+- ❌ Cannot remove URL query parameter on initial entry (demo uses `token`)
 - ❌ Cannot require Vue2 to use pure message login
 
 ### Can Add
@@ -162,11 +162,46 @@ vue-hybrid-bridge-demo/
 ## Technical Keywords
 
 - iframe-based Legacy Integration
-- URL Token Compatibility Layer
+- SSO Redirect Parameter Compatibility Layer
 - Message Bridge (postMessage)
 - Progressive Migration
 - Strangler Fig Pattern
 - TypeScript + Class Style Components
+
+---
+
+## Authentication Flow (SSO-Style)
+
+This demo mirrors a common SSO redirect exchange pattern while keeping the legacy flow intact. The URL parameter is treated as a **login exchange parameter** (here named `login_ticket` for clarity; the demo uses `token`).
+
+1. User completes SSO; browser redirects back with `login_ticket`
+2. Frontend reads `login_ticket` (demo reads `token`)
+3. Frontend sends it to backend for verification (demo simulates login in Vue2)
+4. Backend establishes login state (session or API token)
+5. Vue3/Vue2 share login status via bridge (no raw ticket forwarded)
+
+```mermaid
+sequenceDiagram
+  participant U as User Browser
+  participant SSO as Upstream SSO
+  participant FE as Frontend (Vue3 Host)
+  participant BE as Backend
+  participant V2 as Vue2 Legacy (iframe)
+
+  U->>SSO: Authenticate
+  SSO-->>U: Redirect with login_ticket
+  U->>FE: Load /entry?login_ticket=...
+  FE->>FE: Read login_ticket
+  FE->>BE: POST /auth/exchange (login_ticket)
+  BE-->>FE: Set session / return api token
+  FE-->>V2: Bridge: AUTH_READY (no raw ticket)
+```
+
+## Security Notes
+
+- postMessage bridge validates origin allowlist and message shape
+- Do not treat `login_ticket` as a long-lived credential
+- Recommended for production: clear URL parameters with `history.replaceState` and set Referrer-Policy to `strict-origin-when-cross-origin`
 
 ---
 
@@ -175,4 +210,3 @@ vue-hybrid-bridge-demo/
 ---
 
 **Language:** [English](./README.en.md) | [中文版](./README.zh.md)
-

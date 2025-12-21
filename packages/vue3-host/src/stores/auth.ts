@@ -30,12 +30,12 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   /**
-   * 模擬取得 Token
+   * 模擬取得登入交換憑證（login_ticket）
    * 實際應用中應從既有系統取得
    */
-  function getToken(): string {
-    // Demo 用途：使用固定的模擬 token
-    return 'demo-token-12345'
+  function getLoginTicket(): string {
+    // Demo 用途：使用固定的模擬 login_ticket
+    return 'demo-login-ticket-12345'
   }
 
   return {
@@ -51,7 +51,6 @@ export const useAuthStore = defineStore('auth', () => {
     clearUser,
     setLegacyReady,
     setLegacyRoute,
-    getToken
+    getLoginTicket
   }
 })
-
